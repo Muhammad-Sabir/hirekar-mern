@@ -11,7 +11,7 @@ const Login = () => {
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <div className="max-w-md p-8 text-center bg-white bg-opacity-75 rounded-lg shadow-lg w-96">
-        <h1 className="mb-4 text-3xl font-bold text-red-600">
+        <h1 className="mb-4 text-3xl font-bold text-custom-red">
           {userType === "worker" ? "JOB-SEEKER LOGIN" : "HIRE-TALENT LOGIN"}
         </h1>
         <div className="flex justify-center mb-6">
@@ -19,7 +19,7 @@ const Login = () => {
             to="/login/worker"
             className={`px-4 py-2 ${
               userType === "worker"
-                ? "text-white bg-custom-red rounded-lg"
+                ? "text-white bg-custom-yellow rounded-lg"
                 : "text-gray-600"
             }`}
           >
@@ -30,7 +30,7 @@ const Login = () => {
             to="/login/employer"
             className={`px-4 py-2 ${
               userType === "employer"
-                ? "text-white bg-custom-red rounded-lg"
+                ? "text-white bg-custom-yellow rounded-lg"
                 : "text-gray-600"
             }`}
           >
@@ -42,19 +42,19 @@ const Login = () => {
             <input
               type="email"
               placeholder="Email"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-red"
             />
           </div>
           <div>
             <input
               type="password"
               placeholder="Password"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-red"
             />
           </div>
           <button
             type="submit"
-            className="w-full py-2 text-white transition duration-300 bg-red-600 rounded-lg"
+            className="w-full py-2 text-white transition duration-300 rounded-lg bg-custom-red hover:bg-red-700"
           >
             Login
           </button>

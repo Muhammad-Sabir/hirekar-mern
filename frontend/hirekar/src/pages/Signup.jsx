@@ -11,7 +11,7 @@ const Signup = () => {
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <div className="flex flex-col justify-center w-full p-8 text-center bg-white bg-opacity-75 rounded-lg shadow-lg sm:w-2/4">
-        <h1 className="mb-16 text-4xl font-bold text-red-600">
+        <h1 className="mb-16 text-4xl font-bold text-custom-red">
           {userType === "worker" ? "JOB-SEEKER SIGN UP" : "HIRE-TALENT SIGN UP"}
         </h1>
         <div className="flex justify-center mb-6">
@@ -19,7 +19,7 @@ const Signup = () => {
             to="/signup/worker"
             className={`px-4 w-full py-2 ${
               userType === "worker"
-                ? "text-white bg-custom-red rounded-lg"
+                ? "text-white bg-custom-yellow rounded-lg"
                 : "text-gray-600"
             }`}
           >
@@ -29,7 +29,7 @@ const Signup = () => {
             to="/signup/employer"
             className={`px-4 w-full py-2 ${
               userType === "employer"
-                ? "text-white bg-custom-red rounded-lg"
+                ? "text-white bg-custom-yellow rounded-lg"
                 : "text-gray-600"
             }`}
           >
@@ -41,21 +41,21 @@ const Signup = () => {
             <input
               type="text"
               placeholder="Name"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-red"
             />
           </div>
           <div>
             <input
               type="email"
               placeholder="Email"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-red"
             />
           </div>
           <div>
             <input
               type="password"
               placeholder="Password"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-red"
             />
           </div>
           <button
@@ -69,7 +69,7 @@ const Signup = () => {
           Already have an account?{" "}
           <Link
             to={userType === "worker" ? "/login/worker" : "/login/employer"}
-            className="text-red-600 underline"
+            className="underline text-custom-red"
           >
             Login
           </Link>
