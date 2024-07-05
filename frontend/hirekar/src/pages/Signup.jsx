@@ -19,7 +19,7 @@ const Signup = () => {
             to="/signup/worker"
             className={`px-4 w-full py-2 ${
               userType === "worker"
-                ? "text-white bg-custom-yellow rounded-lg"
+                ? "text-white bg-blue-600 rounded-lg"
                 : "text-gray-600"
             }`}
           >
@@ -29,7 +29,7 @@ const Signup = () => {
             to="/signup/employer"
             className={`px-4 w-full py-2 ${
               userType === "employer"
-                ? "text-white bg-custom-yellow rounded-lg"
+                ? "text-white bg-blue-600 rounded-lg"
                 : "text-gray-600"
             }`}
           >

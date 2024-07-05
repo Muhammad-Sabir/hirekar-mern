@@ -19,7 +19,7 @@ const Login = () => {
             to="/login/worker"
             className={`px-4 py-2 ${
               userType === "worker"
-                ? "text-white bg-custom-yellow rounded-lg"
+                ? "text-white bg-blue-600 rounded-lg"
                 : "text-gray-600"
             }`}
           >
@@ -30,7 +30,7 @@ const Login = () => {
             to="/login/employer"
             className={`px-4 py-2 ${
               userType === "employer"
-                ? "text-white bg-custom-yellow rounded-lg"
+                ? "text-white bg-blue-600 rounded-lg"
                 : "text-gray-600"
             }`}
           >

@@ -2,11 +2,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Layout from "./pages/worker/Layout";
-import Jobs from "./components/Jobs";
-import Resume from "./components/Resume";
+import Layout from "./layouts/Layout";
+import Jobs from "./pages/worker/Jobs";
+import Resume from "./pages/worker/Resume";
 import ChatBox from "./components/ChatBox";
-import RecentChats from "./components/RecentChats";
+import RecentChats from "./pages/RecentChats";
+import Workers from "./pages/employer/Workers";
 
 function App() {
   const router = createBrowserRouter([
@@ -24,21 +25,60 @@ function App() {
     },
     {
       path: "/worker/",
-      element: <Layout  children={<Jobs/>} />
+      element: (
+        <Layout>
+          <Jobs />
+        </Layout>
+      ),
     },
     {
       path: "/worker/chats",
-      element: <Layout  children={<RecentChats/>} />
+      element: (
+        <Layout>
+          <RecentChats />
+        </Layout>
+      ),
     },
     {
       path: "/worker/chats/:user",
-      element: <Layout  children={<ChatBox/>} />
+      element: (
+        <Layout>
+          <ChatBox />
+        </Layout>
+      ),
     },
     {
       path: "/worker/resume",
-      element: <Layout  children={<Resume/>} />
-    }
-
+      element: (
+        <Layout>
+          <Resume />
+        </Layout>
+      ),
+    },
+    {
+      path: "/employer/",
+      element: (
+        <Layout>
+          <Workers />
+        </Layout>
+      ),
+    },
+    {
+      path: "/employer/chats",
+      element: (
+        <Layout>
+          <RecentChats />
+        </Layout>
+      ),
+    },
+    {
+      path: "/employer/chats/:user",
+      element: (
+        <Layout>
+          <ChatBox />
+        </Layout>
+      ),
+    },
   ]);
 
   return (
