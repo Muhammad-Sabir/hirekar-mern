@@ -6,6 +6,8 @@ const { Schema } = mongoose;
 const jobSchema = new Schema({
   employer_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
   worker_id: { type: Schema.Types.ObjectId, ref: "Worker" },
+  title: { type: String, required: true },
+  description: String,
   status: {
     type: String,
     required: true,

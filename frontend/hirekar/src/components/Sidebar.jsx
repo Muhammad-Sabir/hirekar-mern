@@ -9,6 +9,12 @@ const Sidebar = ({ isOpen }) => {
   const currentUrl = window.location.href;
   const hasWorkerPath = currentUrl.includes("/worker");
 
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    window.location.href = hasWorkerPath ? "/login/worker" : "/login/employer";
+  };
+
   const [activeItem, setActiveItem] = useState(
     hasWorkerPath ? "jobs" : "workers"
   );
@@ -76,7 +82,7 @@ const Sidebar = ({ isOpen }) => {
         ))}
       </ul>
       <button
-        type="submit"
+        onClick={logout}
         className="absolute bottom-4 left-4 w-[calc(100%-2rem)] py-2 text-white transition duration-300 rounded-lg bg-red-500 hover:bg-red-700"
       >
         Logout

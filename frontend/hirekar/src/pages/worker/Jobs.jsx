@@ -1,23 +1,68 @@
 import { useState, useEffect } from "react";
 import { FaCircle } from "react-icons/fa";
-import { jobs } from "../../data/jobsData";
 import { RiArrowRightDoubleFill, RiArrowLeftDoubleFill } from "react-icons/ri";
 
 const getStatusColor = (status) => {
   let colorClass = "text-gray-800";
 
-  if (status.toLowerCase() === "active") {
+  if (status.toLowerCase() === "requested") {
     colorClass = "text-green-500";
   } else if (status.toLowerCase() === "pending") {
     colorClass = "text-yellow-500";
   } else if (status.toLowerCase() === "completed") {
     colorClass = "text-blue-500";
+  } else if (status.toLowerCase() === "rejected") {
+    colorClass = "text-red-500";
   }
 
   return colorClass;
 };
 
 const Jobs = () => {
+  const [jobs, setJobs] = useState([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/jobs/history", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        const data = await response.json();
+        setJobs(data);
+      } catch (error) {
+        setError("Error fetching jobs. Please try again.");
+      }
+    };
+
+    fetchJobs();
+  }, []);
+
+  const updateJobStatus = async (id, reqStatus) => {
+    const response = await fetch(`http://localhost:8000/api/jobs/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({
+        status: reqStatus,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update job status.");
+    }
+
+    const updatedJob = await response.json();
+
+    setJobs((prevJobs) =>
+      prevJobs.map((job) => (job._id === updatedJob._id ? updatedJob : job))
+    );
+  };
+
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobileView, setIsMobileView] = useState(false);
   const jobsPerPage = 10;
@@ -33,6 +78,38 @@ const Jobs = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const renderActionButtons = (job) => {
+    if (job.status === "requested") {
+      return (
+        <>
+          <button
+            onClick={() => updateJobStatus(job._id, "pending")}
+            className="p-1 mr-2 border-2 rounded-md"
+          >
+            Accept
+          </button>
+          <button
+            onClick={() => updateJobStatus(job._id, "rejected")}
+            className="p-1 border-2 rounded-md"
+          >
+            Reject
+          </button>
+        </>
+      );
+    } else if (job.status === "pending") {
+      return (
+        <button
+          onClick={() => updateJobStatus(job._id, "completed")}
+          className="p-1 mr-2 border-2 rounded-md"
+        >
+          Mark Complete
+        </button>
+      );
+    } else {
+      return null;
+    }
+  };
+
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
   const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
@@ -40,21 +117,22 @@ const Jobs = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const renderTable = () => (
-    <table className="min-w-full mt-4 bg-white rounded-md shadow-md">
-      <thead className="text-justify">
+    <table className="min-w-full mt-4 text-center bg-white rounded-md shadow-md">
+      <thead className="text-center">
         <tr className="bg-gray-100">
           <th className="px-4 py-2 font-medium">Name</th>
-          <th className="px-4 py-2 font-medium">Date</th>
-          <th className="px-4 py-2 font-medium">Price $/hr</th>
+          <th className="px-4 py-2 font-medium">Description</th>
+          <th className="px-4 py-2 font-medium">Price Rs./hr</th>
           <th className="px-4 py-2 font-medium">Status</th>
+          <th className="px-4 py-2 font-medium">Action</th>
         </tr>
       </thead>
       <tbody>
         {currentJobs.map((job, index) => (
           <tr key={index} className="border-t">
-            <td className="px-4 py-2 text-sm">{job.name}</td>
-            <td className="px-4 py-2 text-sm">{job.date}</td>
-            <td className="px-4 py-2 text-sm">{job.price}</td>
+            <td className="px-4 py-2 text-sm">{job.title}</td>
+            <td className="px-4 py-2 text-sm">{job.description}</td>
+            <td className="px-4 py-2 text-sm">{job.price_per_hour}</td>
             <td
               className={`py-2 px-4 flex items-center text-sm ${getStatusColor(
                 job.status
@@ -66,6 +144,7 @@ const Jobs = () => {
               />
               {job.status}
             </td>
+            <td className="px-4 py-2 text-sm">{renderActionButtons(job)}</td>
           </tr>
         ))}
       </tbody>
@@ -98,6 +177,7 @@ const Jobs = () => {
   return (
     <div className="w-full p-4 pt-4 pb-12 pl-8 pr-8">
       <h2 className="mb-2 text-lg font-semibold">Your Jobs:</h2>
+      {error && <p className="mt-4 text-red-600">{error}</p>}
       {isMobileView ? renderList() : renderTable()}
       <div className="flex justify-end mt-4">
         <button

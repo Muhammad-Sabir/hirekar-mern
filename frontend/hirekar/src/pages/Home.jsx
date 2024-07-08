@@ -1,7 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import backgroundImage from "/assets/home-bg.jpg";
+import { useEffect } from "react";
 
 const Home = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("token") && localStorage.getItem("role")) {
+      const role = localStorage.getItem("role");
+      console.log(role);
+      navigate(`/${role}`);
+    }
+  }, [navigate]);
+
   return (
     <div
       className="flex flex-col items-center justify-center min-h-screen bg-center bg-cover"

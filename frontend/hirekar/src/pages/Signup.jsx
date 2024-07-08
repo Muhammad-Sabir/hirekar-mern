@@ -1,9 +1,57 @@
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import backgroundImage from "/assets/home-bg.jpg";
-import { useParams } from "react-router-dom";
 
 const Signup = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("token") && localStorage.getItem("role")) {
+      const role = localStorage.getItem("role");
+      console.log(role);
+      navigate(`/${role}`);
+    }
+  }, [navigate]);
+
   const { userType } = useParams();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:8000/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          role: userType,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        navigate(`/login/${userType}`);
+      } else {
+        setError(data.message);
+      }
+    } catch (error) {
+      setError("An error occurred. Please try again.");
+    }
+  };
 
   return (
     <div
@@ -36,10 +84,13 @@ const Signup = () => {
             Hire Talent
           </Link>
         </div>
-        <form className="pb-8 space-y-4">
+        <form onSubmit={handleSubmit} className="pb-8 space-y-4">
           <div>
             <input
               type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
               placeholder="Name"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-red"
             />
@@ -47,6 +98,9 @@ const Signup = () => {
           <div>
             <input
               type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               placeholder="Email"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-red"
             />
@@ -54,6 +108,9 @@ const Signup = () => {
           <div>
             <input
               type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
               placeholder="Password"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-red"
             />
@@ -64,6 +121,7 @@ const Signup = () => {
           >
             Sign Up
           </button>
+          {error && <p className="mt-4 text-red-600">{error}</p>}
         </form>
         <p className="mt-4 text-gray-600">
           Already have an account?{" "}

@@ -3,7 +3,7 @@
 function WorkerCard({
   name,
   designation,
-  skill,
+  skills,
   experience,
   pricePerHour,
   location,
@@ -16,7 +16,7 @@ function WorkerCard({
           <strong>Designation:</strong> {designation}
         </p>
         <p className="text-base text-gray-700">
-          <strong>Skill:</strong> {skill}
+          <strong>Skills:</strong> {skills}
         </p>
         <p className="text-base text-gray-700">
           <strong>Experience:</strong> {experience} years
@@ -25,7 +25,7 @@ function WorkerCard({
           <strong>Location:</strong> {location}
         </p>
         <p className="text-base text-gray-700">
-          <strong>Price per hour:</strong> ${pricePerHour}
+          <strong>Price per hour:</strong> Rs.{pricePerHour}
         </p>
       </div>
       <div className="mt-4">

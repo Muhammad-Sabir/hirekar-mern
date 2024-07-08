@@ -1,9 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import WorkerCard from "../../components/WorkerCard";
 
 function Workers() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredWorkers, setFilteredWorkers] = useState(workersData);
+  const [workers, setWorkers] = useState([]);
+  const [filteredWorkers, setFilteredWorkers] = useState([]);
+
+  useEffect(() => {
+    const fetchWorkers = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/workers", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        const data = await response.json();
+        setWorkers(data);
+        setFilteredWorkers(data);
+      } catch (error) {
+        console.error("Error fetching workers:", error);
+      }
+    };
+    fetchWorkers();
+  }, []);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -11,21 +30,21 @@ function Workers() {
   };
 
   const filterWorkers = (query) => {
-    const filtered = workersData.filter(
+    const filtered = workers.filter(
       (worker) =>
         worker.name.toLowerCase().includes(query.toLowerCase()) ||
-        worker.designation.toLowerCase().includes(query.toLowerCase()) ||
-        worker.skill.toLowerCase().includes(query.toLowerCase()) ||
-        worker.location.toLowerCase().includes(query.toLowerCase())
+        (worker.designation &&
+          worker.designation.toLowerCase().includes(query.toLowerCase())) ||
+        (worker.skills &&
+          worker.skills.join(", ").toLowerCase().includes(query.toLowerCase())) ||
+        (worker.city && worker.city.toLowerCase().includes(query.toLowerCase()))
     );
     setFilteredWorkers(filtered);
   };
 
   return (
     <div className="min-h-screen py-10 bg-gray-100">
-      <h1 className="mb-10 text-3xl font-bold text-center">
-        Available Workers
-      </h1>
+      <h1 className="mb-10 text-3xl font-bold text-center">Available Workers</h1>
       <div className="max-w-4xl mx-auto mb-6">
         <input
           type="text"
@@ -35,16 +54,16 @@ function Workers() {
           className="w-full px-4 py-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div className="flex flex-wrap justify-center ">
-        {filteredWorkers.map((worker, index) => (
+      <div className="flex flex-wrap justify-center">
+        {filteredWorkers.map((worker) => (
           <WorkerCard
-            key={index}
+            key={worker._id}
             name={worker.name}
-            designation={worker.designation}
-            skill={worker.skill}
-            experience={worker.experience}
-            pricePerHour={worker.pricePerHour}
-            location={worker.location}
+            designation={worker.designation || "N/A"}
+            skills={worker.skills.join(", ") || "N/A"}
+            experience={worker.years_of_experience || "N/A"}
+            pricePerHour={worker.hourly_rate || "N/A"}
+            location={worker.city || "N/A"}
           />
         ))}
       </div>
@@ -53,135 +72,3 @@ function Workers() {
 }
 
 export default Workers;
-
-
-var workersData = [
-    {
-      name: "John Smith",
-      designation: "Carpenter",
-      skill: "Woodworking, Furniture Making",
-      experience: 8,
-      pricePerHour: 20,
-      location: "New York",
-    },
-    {
-      name: "Jane Doe",
-      designation: "Electrician",
-      skill: "Wiring, Circuit Repair",
-      experience: 5,
-      pricePerHour: 25,
-      location: "Los Angeles",
-    },
-    {
-      name: "Mike Johnson",
-      designation: "Plumber",
-      skill: "Pipe Installation, Leak Repair",
-      experience: 10,
-      pricePerHour: 30,
-      location: "Chicago",
-    },
-    {
-      name: "Sarah Williams",
-      designation: "Painter",
-      skill: "Wall Painting, Spray Painting",
-      experience: 6,
-      pricePerHour: 18,
-      location: "San Francisco",
-    },
-    {
-      name: "John Smith",
-      designation: "Carpenter",
-      skill: "Woodworking, Furniture Making",
-      experience: 8,
-      pricePerHour: 20,
-      location: "New York",
-    },
-    {
-      name: "Jane Doe",
-      designation: "Electrician",
-      skill: "Wiring, Circuit Repair",
-      experience: 5,
-      pricePerHour: 25,
-      location: "Los Angeles",
-    },
-    {
-      name: "Mike Johnson",
-      designation: "Plumber",
-      skill: "Pipe Installation, Leak Repair",
-      experience: 10,
-      pricePerHour: 30,
-      location: "Chicago",
-    },
-    {
-      name: "Sarah Williams",
-      designation: "Painter",
-      skill: "Wall Painting, Spray Painting",
-      experience: 6,
-      pricePerHour: 18,
-      location: "San Francisco",
-    },
-    {
-      name: "John Smith",
-      designation: "Carpenter",
-      skill: "Woodworking, Furniture Making",
-      experience: 8,
-      pricePerHour: 20,
-      location: "New York",
-    },
-    {
-      name: "Jane Doe",
-      designation: "Electrician",
-      skill: "Wiring, Circuit Repair",
-      experience: 5,
-      pricePerHour: 25,
-      location: "Los Angeles",
-    },
-    {
-      name: "Mike Johnson",
-      designation: "Plumber",
-      skill: "Pipe Installation, Leak Repair",
-      experience: 10,
-      pricePerHour: 30,
-      location: "Chicago",
-    },
-    {
-      name: "Sarah Williams",
-      designation: "Painter",
-      skill: "Wall Painting, Spray Painting",
-      experience: 6,
-      pricePerHour: 18,
-      location: "San Francisco",
-    },
-    {
-      name: "John Smith",
-      designation: "Carpenter",
-      skill: "Woodworking, Furniture Making",
-      experience: 8,
-      pricePerHour: 20,
-      location: "New York",
-    },
-    {
-      name: "Jane Doe",
-      designation: "Electrician",
-      skill: "Wiring, Circuit Repair",
-      experience: 5,
-      pricePerHour: 25,
-      location: "Los Angeles",
-    },
-    {
-      name: "Mike Johnson",
-      designation: "Plumber",
-      skill: "Pipe Installation, Leak Repair",
-      experience: 10,
-      pricePerHour: 30,
-      location: "Chicago",
-    },
-    {
-      name: "Sarah Williams",
-      designation: "Painter",
-      skill: "Wall Painting, Spray Painting",
-      experience: 6,
-      pricePerHour: 18,
-      location: "San Francisco",
-    },
-  ];

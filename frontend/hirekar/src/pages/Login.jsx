@@ -1,9 +1,47 @@
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import backgroundImage from "/assets/home-bg.jpg";
 
 const Login = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("token") && localStorage.getItem("role")) {
+      const role = localStorage.getItem("role");
+      console.log(role);
+      navigate(`/${role}`);
+    }
+  }, [navigate]);
+
   const { userType } = useParams();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:8000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.user.role);
+        navigate(`/${userType}/`);
+      } else {
+        setError(data.message);
+      }
+    } catch (error) {
+      setError("An error occurred. Please try again.");
+    }
+  };
 
   return (
     <div
@@ -25,7 +63,6 @@ const Login = () => {
           >
             Job Seeker
           </Link>
-
           <Link
             to="/login/employer"
             className={`px-4 py-2 ${
@@ -37,12 +74,14 @@ const Login = () => {
             Hire Talent
           </Link>
         </div>
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <input
               type="email"
               placeholder="Email"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-red"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div>
@@ -50,6 +89,8 @@ const Login = () => {
               type="password"
               placeholder="Password"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-red"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <button
@@ -58,6 +99,7 @@ const Login = () => {
           >
             Login
           </button>
+          {error && <p className="mt-4 text-red-600">{error}</p>}
         </form>
         <p className="mt-4 text-gray-600">
           Dont have an account?{" "}
