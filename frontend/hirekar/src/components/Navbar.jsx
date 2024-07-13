@@ -1,5 +1,4 @@
 import { MdMenu, MdClose } from "react-icons/md";
-import Notification from "./Notifications";
 
 // eslint-disable-next-line react/prop-types
 const Navbar = ({ toggleSidebar, sidebarOpen }) => {
@@ -18,10 +17,7 @@ const Navbar = ({ toggleSidebar, sidebarOpen }) => {
         </button>
         <span className="font-bold text-white">Hirekar</span>
       </div>
-      <div className="flex justify-center items-center">
       <div className="text-white mr-4">Hello, {hasWorkerPath? 'Worker': 'Employer'}</div>
-      <Notification/>
-      </div>
       
     </nav>
   );
