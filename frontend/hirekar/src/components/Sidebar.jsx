@@ -2,7 +2,10 @@ import { useState } from "react";
 import { GrUserWorker } from "react-icons/gr";
 import { BsChatSquareQuote } from "react-icons/bs";
 import { FaRegFileLines } from "react-icons/fa6";
+import { PiTableBold } from "react-icons/pi";
+import { MdOutlineFileCopy } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { RiUserSettingsLine } from "react-icons/ri";
 
 // eslint-disable-next-line react/prop-types
 const Sidebar = ({ isOpen }) => {
@@ -46,11 +49,31 @@ const Sidebar = ({ isOpen }) => {
         url: "/employer/",
       },
       {
+        key: "recommendations",
+        icon: <MdOutlineFileCopy />,
+        name: "Top Picks",
+        url: "/employer/recommendations",
+      },
+      
+      {
+        key: "jobPostings",
+        icon: <PiTableBold />,
+        name: "Your Job Postings",
+        url: "/employer/jobPostings/",
+      },
+      {
         key: "chats",
         icon: <BsChatSquareQuote />,
         name: "Chats",
         url: "/employer/chats",
       },
+      {
+        key: "profile",
+        icon: <RiUserSettingsLine />,
+        name: "Profile",
+        url: "/employer/profile",
+      },
+      
     ];
   }
 

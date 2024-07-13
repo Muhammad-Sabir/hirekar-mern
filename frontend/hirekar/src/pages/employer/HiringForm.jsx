@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
-const JobPosting = () => {
+const HiringForm = ({}) => {
+
+    const { user } = useParams();
+    console.log(user);
+
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -24,8 +29,8 @@ const JobPosting = () => {
 
     return (
         <div className="w-full p-4 pt-4 pb-12 pl-8 pr-8">
-            <h2 className="text-lg font-semibold mb-2">Job Posting:</h2>
-            <p className="text-sm mb-4">Please fill out the following details to create your job posting.</p>
+            <h2 className="text-lg font-semibold mb-2">Hire {user} for Your Job:</h2>
+            <p className="text-sm mb-4">Please fill out the following details to hire {user} for your Job.</p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
@@ -87,7 +92,7 @@ const JobPosting = () => {
                                 name="hours"
                                 value={formData.hours}
                                 onChange={handleChange}
-                                placeholder='Enter Hours of Job'
+                                placeholder='Enter Job Hours'
                                 min={1}
                                 className="w-full px-4 text-sm py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
@@ -103,4 +108,4 @@ const JobPosting = () => {
     );
 };
 
-export default JobPosting;
+export default HiringForm;

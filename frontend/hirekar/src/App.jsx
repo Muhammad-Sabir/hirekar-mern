@@ -7,9 +7,12 @@ import Jobs from "./pages/worker/Jobs";
 import Resume from "./pages/worker/Resume";
 import ChatBox from "./components/ChatBox";
 import RecentChats from "./pages/RecentChats";
-import JobPosting from "./pages/employer/JobPosting";
 import Recommendations from "./pages/employer/Recommendations";
 import SearchResultList from "./pages/employer/SearchResultList";
+import HiringForm from "./pages/employer/HiringForm";
+import JobPostingForm from "./pages/employer/JobPostingForm";
+import JobPostings from "./pages/employer/JobPostings";
+import Workers from "./pages/employer/Workers";
 
 function App() {
   const router = createBrowserRouter([
@@ -66,13 +69,22 @@ function App() {
       ),
     },
     {
-      path: "/employer/",
+      path: "/employer/recommendations",
       element: (
         <Layout>
           <Recommendations />
         </Layout>
       ),
     },
+    {
+      path: "/employer/",
+      element: (
+        <Layout>
+          <Workers />
+        </Layout>
+      ),
+    },
+
     {
       path: "/employer/chats",
       element: (
@@ -90,13 +102,30 @@ function App() {
       ),
     },
     {
-      path: "/employer/hire",
+      path: "/employer/hire/:user",
       element: (
         <Layout>
-          <JobPosting/>
+          <HiringForm/>
         </Layout>
       ),
     },
+    {
+      path: "/employer/jobPostings",
+      element: (
+        <Layout>
+          <JobPostings/>
+        </Layout>
+      ),
+    },
+    {
+      path: "/employer/jobPostingForm",
+      element: (
+        <Layout>
+          <JobPostingForm/>
+        </Layout>
+      ),
+    },
+
   ]);
 
   return (
