@@ -7,7 +7,9 @@ import Jobs from "./pages/worker/Jobs";
 import Resume from "./pages/worker/Resume";
 import ChatBox from "./components/ChatBox";
 import RecentChats from "./pages/RecentChats";
-import Workers from "./pages/employer/Workers";
+import JobPosting from "./pages/employer/JobPosting";
+import Recommendations from "./pages/employer/Recommendations";
+import SearchResultList from "./pages/employer/SearchResultList";
 
 function App() {
   const router = createBrowserRouter([
@@ -56,10 +58,18 @@ function App() {
       ),
     },
     {
+      path: "/employer/searchResults",
+      element: (
+        <Layout>
+          <SearchResultList />
+        </Layout>
+      ),
+    },
+    {
       path: "/employer/",
       element: (
         <Layout>
-          <Workers />
+          <Recommendations />
         </Layout>
       ),
     },
@@ -76,6 +86,14 @@ function App() {
       element: (
         <Layout>
           <ChatBox />
+        </Layout>
+      ),
+    },
+    {
+      path: "/employer/hire",
+      element: (
+        <Layout>
+          <JobPosting/>
         </Layout>
       ),
     },

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import WorkerCard from "../../components/WorkerCard";
+import SearchBar from "../../components/SearchBar";
 
-function Workers() {
+function Recommendations() {
   const [searchTerm, setSearchTerm] = useState("");
   const [workers, setWorkers] = useState([]);
   const [filteredWorkers, setFilteredWorkers] = useState([]);
@@ -15,6 +16,7 @@ function Workers() {
           },
         });
         const data = await response.json();
+        console.log(data)
         setWorkers(data);
         setFilteredWorkers(data);
       } catch (error) {
@@ -30,6 +32,7 @@ function Workers() {
   };
 
   const filterWorkers = (query) => {
+    console.log(query)
     const filtered = workers.filter(
       (worker) =>
         worker.name.toLowerCase().includes(query.toLowerCase()) ||
@@ -43,9 +46,10 @@ function Workers() {
   };
 
   return (
-    <div className="min-h-screen py-10 bg-gray-100">
-      <h1 className="mb-10 text-3xl font-bold text-center">Available Workers</h1>
-      <div className="max-w-4xl mx-auto mb-6">
+    <div className="w-full p-4 pt-4 pb-8 pl-8 pr-8">
+      <SearchBar/>
+      <h2 className="mb-2 text-lg font-semibold mt-8">Recommended Workers:</h2>
+      {/* <div className="max-w-4xl mx-auto mb-6">
         <input
           type="text"
           placeholder="Search workers..."
@@ -53,9 +57,9 @@ function Workers() {
           onChange={handleSearchChange}
           className="w-full px-4 py-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-      </div>
-      <div className="flex flex-wrap justify-center">
-        {filteredWorkers.map((worker) => (
+      </div> */}
+      <div className="gap-4 flex flex-wrap">
+        {workers.map((worker) => (
           <WorkerCard
             key={worker._id}
             name={worker.name}
@@ -71,4 +75,4 @@ function Workers() {
   );
 }
 
-export default Workers;
+export default Recommendations;

@@ -20,9 +20,20 @@ const Signup = () => {
     password: "",
   });
   const [error, setError] = useState("");
+  
+  const validEmail = (email) => {
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    return emailRegex.test(email);
+  }
+
+  const validName = (name) => {
+    const nameRegex = /^[a-zA-Z]+ [a-zA-Z]+$/;
+    return nameRegex.test(name);
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
@@ -31,6 +42,24 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const { name, email, password } = formData;
+
+    if (!validName(name)) {
+      setError("Name must include both first and last name");
+      return;
+    }
+
+    if (!validEmail(email)) {
+      setError("Email is invalid");
+      return;
+    }
+
+    if (!password || password.length < 8) {
+      setError("Password length must be greater than 8");
+      return;
+    }
+    
     try {
       const response = await fetch("http://localhost:8000/api/auth/signup", {
         method: "POST",

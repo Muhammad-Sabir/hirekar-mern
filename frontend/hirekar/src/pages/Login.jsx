@@ -34,7 +34,14 @@ const Login = () => {
       if (data.token) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("role", data.user.role);
-        navigate(`/${userType}/`);
+
+        if (userType !== data.user.role) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          setError("Select the correct role!");
+        } else {
+          navigate(`/${data.user.role}/`);
+        }
       } else {
         setError(data.message);
       }

@@ -8,9 +8,11 @@ export const listWorkers = async (req, res) => {
       select: "name",
     });
 
+    console.log(workers);
+
     const formattedWorkers = workers.map((worker) => ({
       ...worker.toObject(),
-      name: worker.user.name,
+      name: worker.user ? worker.user.name : null,
       user: undefined,
     }));
 
