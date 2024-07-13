@@ -8,11 +8,11 @@ import Resume from "./pages/worker/Resume";
 import ChatBox from "./components/ChatBox";
 import RecentChats from "./pages/RecentChats";
 import Recommendations from "./pages/employer/Recommendations";
-import SearchResultList from "./pages/employer/SearchResultList";
 import HiringForm from "./pages/employer/HiringForm";
 import JobPostingForm from "./pages/employer/JobPostingForm";
 import JobPostings from "./pages/employer/JobPostings";
 import Workers from "./pages/employer/Workers";
+import Profile from "./pages/employer/Profile";
 
 function App() {
   const router = createBrowserRouter([
@@ -57,14 +57,6 @@ function App() {
       element: (
         <Layout>
           <Resume />
-        </Layout>
-      ),
-    },
-    {
-      path: "/employer/searchResults",
-      element: (
-        <Layout>
-          <SearchResultList />
         </Layout>
       ),
     },
@@ -122,6 +114,14 @@ function App() {
       element: (
         <Layout>
           <JobPostingForm/>
+        </Layout>
+      ),
+    },
+    {
+      path: "/employer/profile",
+      element: (
+        <Layout>
+          <Profile/>
         </Layout>
       ),
     },

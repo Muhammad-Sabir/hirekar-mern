@@ -31,7 +31,7 @@ function WorkerCard({
         </p>
       </div>
       <div className="mt-4">
-        <Link to={`hire/${name}`} className="w-100% block text-center px-4 py-2 mb-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">
+        <Link to={`/employer/hire/${name}`} className="w-100% block text-center px-4 py-2 mb-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">
           Hire
         </Link>
         <Link to={`chats/${name}`} className="w-100% block text-center px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700">
