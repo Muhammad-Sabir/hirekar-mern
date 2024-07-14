@@ -1,49 +1,50 @@
 import Chat from "../models/chatModel.js";
 import Message from "../models/messageModel.js";
 
-export const sendMessage = async (req, res) => {
-  const { receiver_id, content } = req.body;
-
+export const getAllChats = async (req, res) => {
   try {
-    const chat = await Chat.findOne({
-      users: { $all: [req.user._id, receiver_id] },
-    });
+    const { userId } = req.params;
 
-    let chatId;
-    if (chat) {
-      chatId = chat._id;
-      chat.latest_message_id = newMessage._id;
-      chat.updatedAt = Date.now();
-      await chat.save();
-    } else {
-      const newChat = new Chat({
-        users: [req.user._id, receiver_id],
-        latest_message_id: newMessage._id,
-      });
-      await newChat.save();
-      chatId = newChat._id;
-    }
+    const chats = await Chat.find({ users: userId }).populate(
+      "users",
+      "name email"
+    );
 
-    const newMessage = new Message({
-      sender_id: req.user._id,
-      content,
-      chat_id: chatId,
-    });
-    await newMessage.save();
-
-    res.status(201).send(newMessage);
+    res.status(200).json(chats);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(500).json({ message: "Something went wrong", error });
   }
 };
 
-export const getMessages = async (req, res) => {
-  const { chat_id } = req.params;
-
+export const sendMessage = async (req, res) => {
   try {
-    const messages = await Message.find({ chat_id });
-    res.send(messages);
+    const { sender_id, content, chat_id } = req.body;
+
+    const message = new Message({ sender_id, content, chat_id });
+    await message.save();
+
+    await Chat.findByIdAndUpdate(chat_id, {
+      latest_message_id: message._id,
+      seen: false,
+    });
+
+    res.status(201).json(message);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).json({ message: "Something went wrong", error });
+  }
+};
+
+export const getAllMessages = async (req, res) => {
+  try {
+    const { chat_id } = req.params;
+
+    const messages = await Message.find({ chat_id }).populate(
+      "sender_id",
+      "name email"
+    );
+
+    res.status(200).json(messages);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong", error });
   }
 };

@@ -2,12 +2,14 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-// User Schema
 const userSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   role: { type: String, required: true, enum: ["employer", "worker"] },
+  address: { type: String },
+  phone_number: { type: String },
+  isVerified: { type: Boolean, default: false },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
 });

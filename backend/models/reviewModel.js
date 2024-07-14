@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-// Review Schema
 const reviewSchema = new Schema({
   employer_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
   worker_id: { type: Schema.Types.ObjectId, ref: "Worker", required: true },
+  job_id: { type: Schema.Types.ObjectId, ref: "Job", required: true },
   rating: { type: Number, required: true, min: 1, max: 5 },
   review: String,
   created_at: { type: Date, default: Date.now },

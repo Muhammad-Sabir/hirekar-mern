@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-// Message Schema
 const messageSchema = new Schema({
   sender_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
   content: { type: String, required: true, trim: true },

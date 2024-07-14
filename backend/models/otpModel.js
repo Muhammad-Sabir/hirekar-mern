@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
@@ -10,5 +10,5 @@ const otpSchema = new Schema({
   verified: { type: Boolean, default: false },
 });
 
-const OTP = mongoose.model('otp', otpSchema);
+const OTP = mongoose.model("OTP", otpSchema);
 export default OTP;

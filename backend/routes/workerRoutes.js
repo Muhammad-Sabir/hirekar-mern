@@ -1,18 +1,19 @@
 import express from "express";
 import {
-  listWorkers,
+  getAllWorkers,
+  getWorkers,
+  getRecommendedWorkers,
   searchWorkers,
   workerDetails,
-  updateResume,
 } from "../controllers/workerController.js";
-import authMiddleware from "../middleware/authMiddleware.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", authMiddleware, listWorkers);
+router.get("/all", authMiddleware, getAllWorkers);
+router.get("/distance", authMiddleware, getWorkers);
+router.get("/recommended", authMiddleware, getRecommendedWorkers);
 router.get("/search", authMiddleware, searchWorkers);
-router.get("/:id", authMiddleware, workerDetails);
-
-router.put("/:id", authMiddleware, updateResume);
+router.get("/:worker_id", authMiddleware, workerDetails);
 
 export default router;
