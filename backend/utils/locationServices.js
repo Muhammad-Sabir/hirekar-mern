@@ -31,7 +31,6 @@ const calculateAverageLocation = (locations) => {
 export const getAddressCordinates = async (address) => {
     try {
         const url = `https://geocode.maps.co/search?q=${encodeURIComponent(address)}&api_key=${process.env.GEOCODE_API_KEY}`;
-        console.log(url)
         const response = await axios.get(url);
 
         if (response.status !== 200) {
