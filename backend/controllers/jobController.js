@@ -54,12 +54,20 @@ export const assignJob = async (req, res) => {
 export const updateJob = async (req, res) => {
   try {
     const { job_id, status, price_per_hour, hours } = req.body;
-
-    const job = await Job.findByIdAndUpdate(
-      job_id,
-      { status, price_per_hour, hours },
-      { new: true }
-    );
+    let job;
+    if (status === "unassigned") {
+      job = await Job.findByIdAndUpdate(
+        job_id,
+        { status, worker_id: null },
+        { new: true }
+      );
+    } else {
+      job = await Job.findByIdAndUpdate(
+        job_id,
+        { status, price_per_hour, hours },
+        { new: true }
+      );
+    }
 
     res.status(200).json(job);
   } catch (error) {
