@@ -20,23 +20,21 @@ export const signup = async (req, res) => {
       hourly_rate,
     } = req.body;
 
-    // Check if the user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // If the role is worker, validate worker-specific fields
     if (role === "worker") {
       if (!designation || !location || !skills || !hourly_rate) {
-        return res.status(400).json({ message: "All worker fields must be provided" });
+        return res
+          .status(400)
+          .json({ message: "All worker fields must be provided" });
       }
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Create the user with common fields
     const user = new User({
       name,
       email,
@@ -48,7 +46,6 @@ export const signup = async (req, res) => {
 
     await user.save();
 
-    // If the role is worker, create a Worker entry
     if (role === "worker") {
       const worker = new Worker({
         user: user._id,
@@ -87,7 +84,7 @@ export const login = async (req, res) => {
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
 
-    res.status(200).json({ token, user: { id: user._id, role: user.role } });
+    res.status(200).json({ token, user });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong", error });
   }

@@ -34,6 +34,7 @@ const Login = () => {
       if (data.token) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("role", data.user.role);
+        localStorage.setItem("user", JSON.stringify(data.user));
 
         if (userType !== data.user.role) {
           localStorage.removeItem("token");

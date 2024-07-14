@@ -14,6 +14,7 @@ export const getAllWorkers = async (req, res) => {
         populate: {
           path: "employer_id",
           model: User,
+          model: User,
           select: "name",
         },
         select: "_id employer_id worker_id job_id rating review",

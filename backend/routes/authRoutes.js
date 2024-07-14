@@ -1,5 +1,10 @@
 import express from "express";
-import { signup, login, verifyUserOtp, sendOtp } from "../controllers/authController.js";
+import {
+  signup,
+  login,
+  verifyUserOtp,
+  sendOtp,
+} from "../controllers/authController.js";
 import {
   signupValidator,
   loginValidator,

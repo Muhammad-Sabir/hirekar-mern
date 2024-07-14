@@ -5,7 +5,8 @@ import { getAddressCordinates } from "../utils/locationServices.js";
 
 export const createJob = async (req, res) => {
   try {
-    const { employer_id, title, description, price_per_hour, hours, location } = req.body;
+    const { employer_id, title, description, price_per_hour, hours, location } =
+      req.body;
 
     const user = await User.findById(employer_id);
 
@@ -14,7 +15,9 @@ export const createJob = async (req, res) => {
     }
 
     if (user.role !== "employer") {
-      return res.status(403).json({ message: "Only employers can create jobs" });
+      return res
+        .status(403)
+        .json({ message: "Only employers can create jobs" });
     }
 
     const job = new Job({
