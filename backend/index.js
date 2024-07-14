@@ -12,7 +12,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const USERNAME = process.env.DB_USERNAME;
-const PASSWORD = process.env.DB_USERNAME;
+const PASSWORD = process.env.DB_PASSWORD;
 
 connection(USERNAME, PASSWORD);
 
@@ -40,7 +40,7 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log("Connected to socker.io.");
+  console.log("Connected to socket.io");
 
   socket.on("setup", (userData) => {
     socket.join(userData._id);
@@ -54,7 +54,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("new message", (newMessageReceived) => {
-    console.log("New Message Received: ", newMessageReceived);
     let chat = newMessageReceived.chat_id;
 
     if (!chat.users) {

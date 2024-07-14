@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
@@ -6,7 +6,7 @@ import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 import io from "socket.io-client";
 
 const ENDPOINT = "http://localhost:8000";
-let socket, selectedChatCompare;
+let selectedChatCompare;
 
 const ChatBox = () => {
   const [messages, setMessages] = useState([]);
@@ -20,11 +20,20 @@ const ChatBox = () => {
   const hasWorkerPath = currentUrl.includes("/worker");
 
   const userData = JSON.parse(localStorage.getItem("user"));
+  const socketRef = useRef();
 
   useEffect(() => {
-    socket = io(ENDPOINT);
-    socket.emit("setup", userData);
-    socket.on("connection", () => setSocketConnected(true));
+    socketRef.current = io(ENDPOINT);
+    socketRef.current.emit("setup", userData);
+    socketRef.current.on("connect", () => setSocketConnected(true));
+
+    socketRef.current.on("message received", (newMessageReceived) => {
+      setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
+    });
+
+    return () => {
+      socketRef.current.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -52,7 +61,7 @@ const ChatBox = () => {
             : "Unknown User";
         setUser(otherUser);
 
-        socket.emit("join chat", chat_id);
+        socketRef.current.emit("join chat", chat_id);
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
@@ -87,24 +96,11 @@ const ChatBox = () => {
       setMessages((prevMessages) => [...prevMessages, sentMessage]);
       setNewMessage("");
 
-      socket.emit("new message", sentMessage);
+      socketRef.current.emit("new message", sentMessage);
     } catch (error) {
       console.error("Error sending message:", error);
     }
   };
-
-  useEffect(() => {
-    socket.on("message received", (newMessageReceived) => {
-      if (
-        !selectedChatCompare ||
-        selectedChatCompare._id !== newMessageReceived.chat_id
-      ) {
-        // notif
-      } else {
-        setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
-      }
-    });
-  });
 
   return (
     <>
