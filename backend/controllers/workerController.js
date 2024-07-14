@@ -1,5 +1,5 @@
 import Worker from "../models/workerModel.js";
-import User from "../models/userModel.js"; 
+import User from "../models/userModel.js";
 
 export const getAllWorkers = async (req, res) => {
   try {
@@ -12,7 +12,7 @@ export const getAllWorkers = async (req, res) => {
         path: "reviews",
         populate: {
           path: "employer_id",
-          model: User, 
+          model: User,
           select: "name",
         },
         select: "_id employer_id worker_id job_id rating review",

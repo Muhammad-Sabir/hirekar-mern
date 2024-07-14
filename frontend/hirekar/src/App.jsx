@@ -45,7 +45,7 @@ function App() {
       ),
     },
     {
-      path: "/worker/chats/:user",
+      path: "/worker/chats/:chat_id",
       element: (
         <Layout>
           <ChatBox />
@@ -86,7 +86,7 @@ function App() {
       ),
     },
     {
-      path: "/employer/chats/:user",
+      path: "/employer/chats/:chat_id",
       element: (
         <Layout>
           <ChatBox />

@@ -15,6 +15,9 @@ const Sidebar = ({ isOpen }) => {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
+    localStorage.removeItem("user");
+    localStorage.removeItem("selectedChat");
+    4;
     window.location.href = hasWorkerPath ? "/login/worker" : "/login/employer";
   };
 
@@ -54,7 +57,7 @@ const Sidebar = ({ isOpen }) => {
         name: "Top Picks",
         url: "/employer/recommendations",
       },
-      
+
       {
         key: "jobPostings",
         icon: <PiTableBold />,
@@ -73,7 +76,6 @@ const Sidebar = ({ isOpen }) => {
         name: "Profile",
         url: "/employer/profile",
       },
-      
     ];
   }
 

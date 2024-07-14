@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import connection from "./database/db.js";
 import bodyParser from "body-parser";
 import cors from "cors";
+import { Server } from "socket.io";
 
 dotenv.config();
 
@@ -31,4 +32,40 @@ app.use("/api/user", userRoutes);
 
 const PORT = process.env.PORT || 8000;
 
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+const server = app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+
+const io = new Server(server, {
+  pingTimeout: 60000,
+  cors: { origin: "*" },
+});
+
+io.on("connection", (socket) => {
+  console.log("Connected to socker.io.");
+
+  socket.on("setup", (userData) => {
+    socket.join(userData._id);
+    console.log("User Id Setup: ", userData._id);
+    socket.emit("Connected!");
+  });
+
+  socket.on("join chat", (room) => {
+    socket.join(room);
+    console.log("Joined room: ", room);
+  });
+
+  socket.on("new message", (newMessageReceived) => {
+    console.log("New Message Received: ", newMessageReceived);
+    let chat = newMessageReceived.chat_id;
+
+    if (!chat.users) {
+      console.error("Invalid chat ID");
+      return;
+    }
+
+    chat.users.forEach((user) => {
+      if (user._id === newMessageReceived.sender_id._id) return;
+
+      socket.in(user._id).emit("message received", newMessageReceived);
+    });
+  });
+});
