@@ -1,6 +1,7 @@
 import Job from "../models/jobModel.js";
 import Worker from "../models/workerModel.js";
 import User from "../models/userModel.js";
+import { getAddressCordinates } from "../utils/locationServices.js";
 
 export const createJob = async (req, res) => {
   try {
@@ -108,36 +109,6 @@ export const getRecommendedJobs = async (req, res) => {
   }
 };
 
-export const getNearbyJobs = async (req, res) => {
-  try {
-    const { user_id } = req.user;
-    const { distance } = req.query;
-
-    if (!distance || isNaN(distance)) {
-      return res.status(400).json({ message: "Invalid distance parameter" });
-    }
-
-    const worker = await Worker.findOne({ user: user_id });
-    if (!worker) {
-      return res.status(404).json({ message: "Worker not found" });
-    }
-
-    const jobs = await Job.find({
-      location: {
-        $nearSphere: {
-          $geometry: worker.location,
-          $maxDistance: distance * 1000,
-        },
-      },
-      status: "requested",
-    });
-
-    res.status(200).json(jobs);
-  } catch (error) {
-    res.status(500).json({ message: "Something went wrong", error });
-  }
-};
-
 export const getJobHistory = async (req, res) => {
   try {
     const { user_id, role } = req.params;
@@ -158,5 +129,50 @@ export const getJobHistory = async (req, res) => {
     res.status(200).json(jobs);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong", error });
+  }
+};
+
+export const getNearbyJobs = async (req, res) => {
+  const { user_id } = req.params;
+
+  try {
+    // find the worker by ID
+    const worker = await User.findById(user_id);
+    if (!worker) {
+      return res.status(404).json({ message: 'Worker not found' });
+    }
+
+    const workerAddress = worker.address;
+    const { longitude, latitude }  = await getAddressCordinates(workerAddress);
+
+    // define the search radius
+    const radius = 30 * 1000;
+
+    //find nearby jobs based on worker's location
+    const jobs = await Job.find({
+      location: {
+        $nearSphere: {
+          $geometry: {
+            type: 'Point',
+            coordinates: [longitude, latitude],
+          },
+          $maxDistance: radius,
+        },
+      },
+      worker_id: null,
+    }).populate({
+      path: 'employer_id',
+      select: 'name email',
+    });
+
+    const responseObject = {
+      worker_coordinates: [longitude, latitude],
+      jobs,
+    };
+
+    res.json(responseObject);
+  } catch (error) {
+    console.error('Error finding locations', error);
+    res.status(500).json({ message: 'Failed to find nearby jobs' });
   }
 };
