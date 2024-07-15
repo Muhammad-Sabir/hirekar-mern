@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const calculateAverageLocation = (locations) => {
+export const calculateAverageLocation = (locations) => {
     if (locations.length === 1) {
         const { lat, lon } = locations[0];
         return { latitude: parseFloat(lat), longitude: parseFloat(lon) };
