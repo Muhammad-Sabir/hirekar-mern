@@ -28,9 +28,33 @@ const calculateAverageLocation = (locations) => {
     }
 };
 
+
+function simplifyAddress(address) {
+
+    const parts = address.split(',').map(part => part.trim());
+    const cityCountry = parts.slice(-2).join(', ');
+    const componentPattern = /\b([A-Za-z\s]+)\b (?:Road|Town|Cantt')/i;
+    let simplifiedAddress = '';
+
+    parts.forEach(part => {
+        const match = part.match(componentPattern);
+        if (match) {
+            simplifiedAddress = `${match[0].match(/\w+\s+\w+$/)[0]}, ${cityCountry}`;
+        }
+    });
+
+    if (!simplifiedAddress) {
+        simplifiedAddress = cityCountry;
+    }
+    return simplifiedAddress;
+}
+
+
 export const getAddressCordinates = async (address) => {
-    try {
-        const url = `https://geocode.maps.co/search?q=${encodeURIComponent(address)}&api_key=${process.env.GEOCODE_API_KEY}`;
+    try{
+        const formattedAddress = simplifyAddress(address);
+        console.log(formattedAddress);
+        const url = `https://geocode.maps.co/search?q=${encodeURIComponent(formattedAddress)}&api_key=${process.env.GEOCODE_API_KEY}`;
         const response = await axios.get(url);
 
         if (response.status !== 200) {
