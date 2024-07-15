@@ -1,10 +1,7 @@
 import Worker from "../models/workerModel.js";
 import User from "../models/userModel.js";
 import Job from "../models/jobModel.js";
-import {
-  getAddressCordinates,
-  calculateDistance,
-} from "../utils/locationServices.js";
+import {calculateDistance, calculateAverageLocation} from "../utils/locationServices.js";
 
 export const getAllWorkers = async (req, res) => {
   try {
@@ -40,14 +37,12 @@ export const getNearbyWorkers = async (req, res) => {
       return res.status(404).json({ message: "Employer not found" });
     }
 
-    const employerAddress = employer.address;
-
-    // call external API to fetch location details
-    const { longitude, latitude } = await getAddressCordinates(employerAddress);
+    const longitude = employer.location.coordinates[0];
+    const latitude = employer.location.coordinates[1]
 
     //find nearby workers based on computed location
-    const radius = 10;
-    const workers = await Worker.find({
+    const radius = 30;
+    const workers = await User.find({
       location: {
         $nearSphere: {
           $geometry: {
@@ -56,11 +51,8 @@ export const getNearbyWorkers = async (req, res) => {
           },
           $maxDistance: radius * 1000,
         },
-      },
-    }).populate({
-      path: "user",
-      select: "name email",
-    });
+      },role: 'worker'
+    })
 
     const responseObject = {
       emp_coordinates: [longitude, latitude],

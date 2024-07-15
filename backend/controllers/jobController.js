@@ -101,6 +101,8 @@ export const getRecommendedJobs = async (req, res) => {
       return res.status(404).json({ message: "Worker not found" });
     }
 
+    const userLocation = worker.user.location.coordinates;
+
     const pastJobs = await Job.find({
       worker_id: worker._id,
       status: { $in: ["completed", "pending"] },
@@ -113,7 +115,7 @@ export const getRecommendedJobs = async (req, res) => {
     let totalPrice = 0;
     pastJobs.forEach((job) => {
       totalDistance += calculateDistance(
-        worker.location.coordinates,
+        userLocation,
         job.location.coordinates
       );
       totalPrice += job.price_per_hour;
@@ -130,7 +132,7 @@ export const getRecommendedJobs = async (req, res) => {
       title: worker.designation,
       "location.coordinates": {
         $geoWithin: {
-          $centerSphere: [worker.location.coordinates, maxDistance / 3963.2],
+          $centerSphere: [userLocation, maxDistance / 3963.2],
         },
       },
       price_per_hour: { $gte: minPrice, $lte: maxPrice },
@@ -179,8 +181,8 @@ export const getNearbyJobs = async (req, res) => {
       return res.status(404).json({ message: "Worker not found" });
     }
 
-    const workerAddress = worker.address;
-    const { longitude, latitude } = await getAddressCordinates(workerAddress);
+    const longitude = worker.location.coordinates[0];
+    const latitude = worker.location.coordinates[1]
 
     // define the search radius
     const radius = 30 * 1000;

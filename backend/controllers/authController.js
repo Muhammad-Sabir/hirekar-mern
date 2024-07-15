@@ -4,6 +4,7 @@ import OTP from "../models/otpModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { createAndSendOTP } from "../utils/otpUtils.js";
+import { getAddressCordinates } from "../utils/locationServices.js";
 
 export const signup = async (req, res) => {
   try {
@@ -15,7 +16,6 @@ export const signup = async (req, res) => {
       address,
       phone_number,
       designation,
-      location,
       skills,
       hourly_rate,
     } = req.body;
@@ -26,7 +26,7 @@ export const signup = async (req, res) => {
     }
 
     if (role === "worker") {
-      if (!designation || !location || !skills || !hourly_rate) {
+      if (!designation || !skills || !hourly_rate) {
         return res
           .status(400)
           .json({ message: "All worker fields must be provided" });
@@ -35,6 +35,13 @@ export const signup = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
+    let longitude, latitude = 0;
+    try {
+      ({ longitude, latitude } = await getAddressCordinates(address));
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+
     const user = new User({
       name,
       email,
@@ -42,6 +49,7 @@ export const signup = async (req, res) => {
       role,
       address,
       phone_number,
+      location :  { "type": "Point", "coordinates": [longitude, latitude]},
     });
 
     await user.save();
@@ -50,7 +58,6 @@ export const signup = async (req, res) => {
       const worker = new Worker({
         user: user._id,
         designation,
-        location,
         skills,
         hourly_rate,
       });

@@ -4,22 +4,20 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const calculateAverageLocation = (locations) => {
-  if (locations.length === 1) {
-    // Only one location, use its coordinates
-    const { lat, lon } = locations[0];
-    return { latitude: parseFloat(lat), longitude: parseFloat(lon) };
-  } else if (locations.length > 1) {
-    // If more then one location calculate average of latitudes and longitudes
-    let totalLat = 0;
-    let totalLon = 0;
+    if (locations.length === 1) {
+        const { lat, lon } = locations[0];
+        return { latitude: parseFloat(lat), longitude: parseFloat(lon) };
 
-    locations.forEach((location) => {
-      totalLat += parseFloat(location.lat);
-      totalLon += parseFloat(location.lon);
-    });
+    } else if (locations.length > 1) {
+        let totalLat = 0, totalLon = 0;
 
-    const latitude = totalLat / locations.length;
-    const longitude = totalLon / locations.length;
+        locations.forEach((location) => {
+            totalLat += parseFloat(location.lat);
+            totalLon += parseFloat(location.lon);
+        });
+
+        const latitude = totalLat / locations.length;
+        const longitude = totalLon / locations.length;
 
         return { longitude, latitude };
     } else {
@@ -50,38 +48,45 @@ function simplifyAddress(address) {
 
 
 export const getAddressCordinates = async (address) => {
-    try{
+    try {
         const formattedAddress = simplifyAddress(address);
         console.log(formattedAddress);
         const url = `https://geocode.maps.co/search?q=${encodeURIComponent(formattedAddress)}&api_key=${process.env.GEOCODE_API_KEY}`;
+        console.log(url)
         const response = await axios.get(url);
+        console.log(response.data)
 
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch location details");
+        if (response.status !== 200) {
+            throw new Error("Failed to fetch location details");
+        }
+
+        const { longitude, latitude } = calculateAverageLocation(response.data);
+        console.log(longitude, latitude)
+
+        if(longitude == 0){
+            console.log("hello  ")
+        }
+        return { longitude, latitude };
+    } catch (error) {
+        console.error("Error fetching location details:", error.message);
+        throw error;
     }
-
-    const { longitude, latitude } = calculateAverageLocation(response.data);
-    return { longitude, latitude };
-  } catch (error) {
-    console.error("Error fetching location details:", error.message);
-    throw error;
-  }
 };
 
 export const calculateDistance = (coords1, coords2) => {
-  const [lat1, lon1] = coords1;
-  const [lat2, lon2] = coords2;
+    const [lat1, lon1] = coords1;
+    const [lat2, lon2] = coords2;
 
-  const R = 6371; // Radius of the Earth in kilometers
-  const dLat = (lat2 - lat1) * (Math.PI / 180);
-  const dLon = (lon2 - lon1) * (Math.PI / 180);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * (Math.PI / 180)) *
-      Math.cos(lat2 * (Math.PI / 180)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = R * c;
-  return distance;
+    const R = 6371; // Radius of the Earth in kilometers
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * (Math.PI / 180)) *
+        Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return distance;
 };

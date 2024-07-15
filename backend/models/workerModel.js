@@ -9,7 +9,6 @@ const workerSchema = new Schema({
     enum: ["Driver", "Gardener", "Electrician", "Plumber"],
     required: true,
   },
-  location: { type: { type: String }, coordinates: [Number] },
   skills: { type: [String], required: true },
   hourly_rate: Number,
   ratings: Number,
@@ -22,8 +21,6 @@ workerSchema.pre("save", function (next) {
   this.updated_at = Date.now();
   next();
 });
-
-workerSchema.index({ location: "2dsphere" });
 
 const Worker = mongoose.model("Worker", workerSchema);
 export default Worker;
