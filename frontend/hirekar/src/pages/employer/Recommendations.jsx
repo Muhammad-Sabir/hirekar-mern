@@ -30,7 +30,8 @@ function Recommendations() {
             <div className="gap-4 flex flex-wrap">
                 {workers.map((worker) => (
                     <WorkerCard
-                        userId={worker.user._id}
+                        id={worker.user._id}
+                        userId={worker._id}
                         className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
                         name={worker.user.name}
                         designation={worker.designation || "N/A"}

@@ -92,6 +92,7 @@ function Workers() {
                     <WorkerCard
                         key={worker._id}
                         id={worker.user._id}
+                        userId={worker._id}
                         name={worker.user.name}
                         designation={worker.designation || "N/A"}
                         skills={worker.skills.join(", ") || "N/A"}

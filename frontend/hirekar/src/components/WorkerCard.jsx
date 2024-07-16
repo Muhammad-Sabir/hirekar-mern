@@ -46,7 +46,7 @@ function WorkerCard({
 
   return (
     <div className="m-4 overflow-hidden bg-white rounded shadow-xl w-60 h-[16rem]">
-      <Link to={`/employer/${id}`}>
+      <Link to={`/employer/${userId}`}>
         <div className="mb-2 text-lg font-bold">{name}</div>
         <p className="text-sm text-gray-700">
           <strong>Designation:</strong> {designation}
@@ -66,7 +66,7 @@ function WorkerCard({
       </Link>
       <div className="mt-4">
         <Link
-          to={`/employer/hire/${name}/${id}`}
+          to={`/employer/hire/${name}/${userId}`}
           className="w-100% block text-center px-4 py-2 mb-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
         >
           Hire
