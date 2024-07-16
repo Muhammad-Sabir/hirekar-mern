@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import SearchBar from '../../components/SearchBar';
 import WorkerCard from '../../components/WorkerCard';
+import { calculateAverageRating } from '../../../utils/calculateAvgRating';
 
 function Recommendations() {
     const [workers, setWorkers] = useState([]);
@@ -8,7 +8,7 @@ function Recommendations() {
     useEffect(() => {
         const fetchWorkers = async () => {
             try {
-                const response = await fetch("http://localhost:8000/api/workers", {
+                const response = await fetch("http://localhost:8000/api/worker/recommended", {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
                     },
@@ -30,14 +30,14 @@ function Recommendations() {
             <div className="gap-4 flex flex-wrap">
                 {workers.map((worker) => (
                     <WorkerCard
-                        key={worker._id}
+                        userId={worker.user._id}
                         className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
-                        name={worker.name}
+                        name={worker.user.name}
                         designation={worker.designation || "N/A"}
                         skills={worker.skills.join(", ") || "N/A"}
-                        experience={worker.years_of_experience || "N/A"}
-                        pricePerHour={worker.hourly_rate || "N/A"}
-                        location={worker.city || "N/A"}
+                        hourlyRate={worker.hourly_rate || "N/A"}
+                        rating={calculateAverageRating(worker.reviews)}
+                        phoneNo={worker.user.phone_number || "N/A"}
                     />
                 ))}
             </div>

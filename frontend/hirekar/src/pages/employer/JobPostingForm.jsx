@@ -4,9 +4,9 @@ const JobPostingForm = () => {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        jobType: '',
         price: '',
-        hours: ''
+        hours: '',
+        address: ''
     });
 
     const handleChange = (e) => {
@@ -17,9 +17,45 @@ const JobPostingForm = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
+        const token = localStorage.getItem("token");
+
+        const jobData = {
+            title: formData.title,
+            description: formData.description,
+            price_per_hour: formData.price,
+            hours: formData.hours,
+            address: formData.address
+        };
+
+        try {
+            const response = await fetch('http://localhost:8000/api/job/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(jobData)
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            console.log('Job created successfully:', data);
+            // You can also reset the form here if needed
+            setFormData({
+                title: '',
+                description: '',
+                price: '',
+                hours: '',
+                address: ''
+            });
+        } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
+        }
     };
 
     return (
@@ -48,8 +84,18 @@ const JobPostingForm = () => {
                                 onChange={handleChange}
                                 className="w-full px-4 text-sm  text-gray-400 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Enter job description"
-                                rows={6} // Adjust the number of rows as needed
+                                rows={4} // Adjust the number of rows as needed
                             ></textarea>
+                        </div>
+                        <div className='col-span-2'>
+                            <input
+                                type="text"
+                                name="address"
+                                value={formData.address}
+                                onChange={handleChange}
+                                placeholder='Enter Job Address'
+                                className="w-full px-4 text-sm py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            />
                         </div>
                     </div>
                 </div>
@@ -69,12 +115,11 @@ const JobPostingForm = () => {
                         </div>
                         <div>
                             <input
-                                type="number"
+                                type="text"
                                 name="hours"
                                 value={formData.hours}
                                 onChange={handleChange}
                                 placeholder='Enter Job Hours'
-                                min={1}
                                 className="w-full px-4 text-sm py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                         </div>

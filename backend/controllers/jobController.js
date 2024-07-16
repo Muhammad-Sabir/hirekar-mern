@@ -8,8 +8,10 @@ import {
 
 export const createJob = async (req, res) => {
   try {
-    const { employer_id, title, description, price_per_hour, hours, location } =
+    const { title, description, price_per_hour, hours, address } =
       req.body;
+    
+    const employer_id = req.user._id;
 
     const user = await User.findById(employer_id);
 
@@ -23,6 +25,13 @@ export const createJob = async (req, res) => {
         .json({ message: "Only employers can create jobs" });
     }
 
+    let longitude, latitude = 0;
+    try {
+      ({ longitude, latitude } = await getAddressCordinates(address));
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+
     const job = new Job({
       employer_id,
       title,
@@ -30,7 +39,7 @@ export const createJob = async (req, res) => {
       status: "unassigned",
       price_per_hour,
       hours,
-      location,
+      location: { "type": "Point", "coordinates": [longitude, latitude]}
     });
     await job.save();
 
@@ -83,7 +92,14 @@ export const getAllJobs = async (req, res) => {
   try {
     const jobs = await Job.find()
       .populate("employer_id", "name email")
-      .populate("worker_id", "name email");
+      .populate({
+        path: 'worker_id',
+        select: 'user',
+        populate: {
+          path: 'user',
+          select: 'name'
+        }
+      });
 
     res.status(200).json(jobs);
   } catch (error) {

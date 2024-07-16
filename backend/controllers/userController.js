@@ -3,7 +3,7 @@ import Worker from "../models/workerModel.js";
 
 export const getProfile = async (req, res) => {
   try {
-    const { user_id } = req.params;
+    const user_id = req.user._id;
 
     const user = await User.findById(user_id);
     let profile = { user };
@@ -21,7 +21,7 @@ export const getProfile = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    const { user_id } = req.params;
+    const user_id = req.user._id;
     const {
       name,
       address,

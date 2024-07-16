@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 const RecentChats = () => {
   const [chats, setChats] = useState([]);
+  const [loading, setLoading] = useState(true); // Introduce loading state
   const currentUrl = window.location.href;
   const hasWorkerPath = currentUrl.includes("/worker");
   const token = localStorage.getItem("token");
@@ -22,10 +23,11 @@ const RecentChats = () => {
         }
 
         const data = await response.json();
-
         setChats(data);
+        setLoading(false); // Update loading state after fetching
       } catch (error) {
         console.error("Error fetching chats:", error);
+        setLoading(false); // Ensure loading state is updated even on error
       }
     };
 
@@ -36,18 +38,21 @@ const RecentChats = () => {
     localStorage.setItem("selectedChat", JSON.stringify(chat));
   };
 
+  if (loading) {
+    return <div>Loading...</div>; // Display a loading indicator while fetching
+  }
+
   return (
     <div className="w-full p-4 pt-4 pb-8 pl-8 pr-8">
       <h2 className="mb-2 text-lg font-semibold">Your Recent Chats:</h2>
       <div className="space-y-4">
         {chats.map((chat, index) => {
-          const isoDate = chat.updatedAt; // Assuming 'item' is defined somewhere
+          const isoDate = chat.updatedAt;
           const date = new Date(isoDate);
           const formattedDate = date.toLocaleDateString("en-US");
           const otherUser = chat.users.find(
             (user) => user.role !== (hasWorkerPath ? "worker" : "employer")
           );
-          console.log(otherUser);
 
           return (
             <Link
@@ -55,8 +60,8 @@ const RecentChats = () => {
               key={index}
               to={
                 hasWorkerPath
-                  ? `/worker/chats/${chat._id}`
-                  : `/employer/chats/${chat._id}`
+                  ? `/worker/chats/${chat._id}/${chat.users[1].name}`
+                  : `/employer/chats/${chat._id}/${chat.users[1].name}`
               }
               className="block p-4 transition duration-300 ease-in-out rounded-lg shadow-md hover:shadow-lg hover:bg-gray-100"
             >
@@ -68,7 +73,7 @@ const RecentChats = () => {
                   <span className="text-sm text-gray-500">{formattedDate}</span>
                 </div>
                 <p className="text-sm text-gray-800">
-                  {chat.latest_message_id.content}
+                  {chat.latest_message_id ? chat.latest_message_id.content : "No recent message"}
                 </p>
               </div>
             </Link>

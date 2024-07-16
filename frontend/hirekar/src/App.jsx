@@ -13,6 +13,8 @@ import JobPostingForm from "./pages/employer/JobPostingForm";
 import JobPostings from "./pages/employer/JobPostings";
 import Workers from "./pages/employer/Workers";
 import Profile from "./pages/employer/Profile";
+import OtpForm from "./pages/OtpForm";
+import WorkerDetailPage from "./pages/employer/WorkerDetailPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -27,6 +29,10 @@ function App() {
     {
       path: "/signup/:userType",
       element: <Signup />,
+    },
+    {
+      path: "/verifyOtp/:userType",
+      element: <OtpForm />,
     },
     {
       path: "/worker/",
@@ -76,6 +82,7 @@ function App() {
         </Layout>
       ),
     },
+    
 
     {
       path: "/employer/chats",
@@ -86,7 +93,7 @@ function App() {
       ),
     },
     {
-      path: "/employer/chats/:chat_id",
+      path: "/employer/chats/:chat_id/:chat_user",
       element: (
         <Layout>
           <ChatBox />
@@ -94,10 +101,18 @@ function App() {
       ),
     },
     {
-      path: "/employer/hire/:user",
+      path: "/employer/hire/:user/:user_id",
       element: (
         <Layout>
           <HiringForm/>
+        </Layout>
+      ),
+    },
+    {
+      path: "/employer/:worker_id",
+      element: (
+        <Layout>
+          <WorkerDetailPage/>
         </Layout>
       ),
     },

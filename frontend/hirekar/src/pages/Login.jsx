@@ -1,22 +1,22 @@
 import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import backgroundImage from "/assets/home-bg.jpg";
 
 const Login = () => {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (localStorage.getItem("token") && localStorage.getItem("role")) {
-      const role = localStorage.getItem("role");
-      console.log(role);
-      navigate(`/${role}`);
-    }
-  }, [navigate]);
-
   const { userType } = useParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  //console.log(userType)
+
+  useEffect(() => {
+    if (localStorage.getItem("token") && localStorage.getItem("role")) {
+      const role = localStorage.getItem("role");
+      navigate(`/${role}`);
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,7 +41,11 @@ const Login = () => {
           localStorage.removeItem("role");
           setError("Select the correct role!");
         } else {
-          navigate(`/${data.user.role}/`);
+          if (!data.user.isVerified) {
+              navigate(`/verifyOtp/${userType}`);
+          } else {
+            navigate(`/${data.user.role}/`);
+          }
         }
       } else {
         setError(data.message);
@@ -107,7 +111,17 @@ const Login = () => {
           >
             Login
           </button>
-          {error && <p className="mt-4 text-red-600">{error}</p>}
+          {error && error === "User not verified" && (
+            <p className="m-4 text-red-600">
+              User not verified.{" "}
+              <Link to={`/verifyOtp/${userType}`} className="text-blue-600 underline">
+                Verify Now
+              </Link>
+            </p>
+          )}
+          {error && error !== "User not verified" && (
+            <p className="mt-4 text-red-600">{error}</p>
+          )}
         </form>
         <p className="mt-4 text-gray-600">
           Dont have an account?{" "}

@@ -74,8 +74,10 @@ export const getAddressCordinates = async (address) => {
 };
 
 export const calculateDistance = (coords1, coords2) => {
-    const [lat1, lon1] = coords1;
-    const [lat2, lon2] = coords2;
+    const lat1 = coords1.latitude;
+    const lon1 = coords1.longitude;
+    const lat2 = coords2.latitude;
+    const lon2 = coords2.longitude;
 
     const R = 6371; // Radius of the Earth in kilometers
     const dLat = (lat2 - lat1) * (Math.PI / 180);
@@ -90,3 +92,4 @@ export const calculateDistance = (coords1, coords2) => {
     const distance = R * c;
     return distance;
 };
+

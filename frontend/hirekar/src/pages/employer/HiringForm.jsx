@@ -1,107 +1,91 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-const HiringForm = ({}) => {
+const HiringForm = () => {
+    const { user, user_id } = useParams();
+    const [selectedJobId, setSelectedJobId] = useState('');
+    const [jobs, setJobs] = useState([]);
 
-    const { user } = useParams();
-    console.log(user);
+    useEffect(() => {
+        const fetchJobs = async () => {
+            try {
+                const response = await fetch('http://localhost:8000/api/job/all', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                });
+                const data = await response.json();
+                const unassignedJobs = data.filter(job => job.status === 'unassigned');
+                setJobs(unassignedJobs);
+            } catch (error) {
+                console.error('Error fetching jobs:', error);
+            }
+        };
 
-    const [formData, setFormData] = useState({
-        title: '',
-        description: '',
-        jobType: '',
-        price: '',
-        hours: ''
-    });
+        fetchJobs();
+    }, []);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
+        setSelectedJobId(e.target.value);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
+
+        const formData = {
+            job_id: selectedJobId,
+            worker_id: user_id,
+        };
+
+        try {
+            const response = await fetch('http://localhost:8000/api/job/assign', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(formData),
+            });
+            const result = await response.json();
+            console.log('Job assigned:', result);
+        } catch (error) {
+            console.error('Error assigning job:', error);
+        }
     };
 
     return (
         <div className="w-full p-4 pt-4 pb-12 pl-8 pr-8">
             <h2 className="text-lg font-semibold mb-2">Hire {user} for Your Job:</h2>
-            <p className="text-sm mb-4">Please fill out the following details to hire {user} for your Job.</p>
+            <p className="text-sm mb-4">Please fill out the following details to hire {user} for your job.</p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <h3 className="font-semibold mb-3 mt-5">Enter Job Information</h3>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <input
-                                type="text"
-                                name="title"
-                                value={formData.title}
-                                onChange={handleChange}
-                                placeholder='Enter Job Title'
-                                className="w-full px-4 text-sm py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            />
-                        </div>
-                        <div>
                             <select
                                 name="jobType"
-                                value={formData.jobType}
+                                value={selectedJobId}
                                 onChange={handleChange}
-                                className="w-full px-4 text-sm  text-gray-400 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full px-4 text-sm text-gray-400 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             >
                                 <option value="">Select a job</option>
-                                <option value="carpenter">Carpenter</option>
-                                <option value="plumber">Plumber</option>
-                                <option value="electrician">Electrician</option>
-                                {/* Add more job options here */}
+                                {jobs.map(job => (
+                                    <option key={job._id} value={job._id}>
+                                        {job.title} - {job.description}
+                                    </option>
+                                ))}
                             </select>
                         </div>
-                        <div className='col-span-2'>
-                            <textarea
-                                name="description"
-                                value={formData.description}
-                                onChange={handleChange}
-                                className="w-full px-4 text-sm  text-gray-400 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                placeholder="Enter job description"
-                                rows={6} // Adjust the number of rows as needed
-                            ></textarea>
-                        </div>
                     </div>
                 </div>
-
-                <div>
-                    <h3 className=" font-semibold mb-3 mt-5">Enter Job Comprehension</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <input
-                                type="text"
-                                name="price"
-                                value={formData.price}
-                                onChange={handleChange}
-                                placeholder='Enter Job Price/hr'
-                                className="w-full px-4 text-sm py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            />
-                        </div>
-                        <div>
-                            <input
-                                type="number"
-                                name="hours"
-                                value={formData.hours}
-                                onChange={handleChange}
-                                placeholder='Enter Job Hours'
-                                min={1}
-                                className="w-full px-4 text-sm py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex justify-end mt-6">
-                    <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-500 focus:outline-none focus:bg-blue-700">Submit</button>
+                <div className="flex mt-8">
+                    <button
+                        type="submit"
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                    >
+                        Hire {user}
+                    </button>
                 </div>
             </form>
         </div>

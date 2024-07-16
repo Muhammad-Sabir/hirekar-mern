@@ -3,7 +3,8 @@ import Worker from "../models/workerModel.js";
 
 export const addReview = async (req, res) => {
   try {
-    const { employer_id, worker_id, job_id, rating, review } = req.body;
+    const { worker_id, job_id, rating, review } = req.body;
+    const employer_id = req.user._id;
 
     const newReview = new Review({
       employer_id,

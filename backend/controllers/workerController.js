@@ -8,7 +8,7 @@ export const getAllWorkers = async (req, res) => {
     const workers = await Worker.find()
       .populate({
         path: "user",
-        select: "name email",
+        select: "name email phone_number",
       })
       .populate({
         path: "reviews",
@@ -101,6 +101,7 @@ export const getRecommendedWorkers = async (req, res) => {
       (job) =>
         job.worker_id && job.worker_id.designation === mostFrequentDesignation
     );
+
     const locations = frequentDesignationJobs.map(
       (job) => job.location.coordinates
     );
@@ -110,26 +111,42 @@ export const getRecommendedWorkers = async (req, res) => {
     const averageCoordinates = calculateAverageLocation(
       locations.map(([lat, lon]) => ({ lat, lon }))
     );
+
     const averagePrice = prices.reduce((a, b) => a + b, 0) / prices.length;
 
     // Define the distance and price range
     const distanceRange =
       1.2 * calculateDistance(averageCoordinates, averageCoordinates); // +20% distance
+
     const priceRange = [averagePrice * 0.8, averagePrice * 1.2]; // +-20% price
 
     // Find workers based on the criteria
     const recommendedWorkers = await Worker.find({
       designation: mostFrequentDesignation,
-      "location.coordinates": {
+      /* "location.coordinates": {
         $geoWithin: {
           $centerSphere: [
             [averageCoordinates.longitude, averageCoordinates.latitude],
             distanceRange / 6378.1,
           ], // 6378.1 km is the radius of the Earth
         },
-      },
+      }, */
       hourly_rate: { $gte: priceRange[0], $lte: priceRange[1] },
-    }).populate("reviews");
+    })
+    .populate({
+      path: "user",
+      select: "name email phone_number",
+    })
+    .populate({
+      path: "reviews",
+      populate: {
+        path: "employer_id",
+        model: User,
+        model: User,
+        select: "name",
+      },
+      select: "_id employer_id worker_id job_id rating review",
+    });
 
     return res.status(200).json(recommendedWorkers);
   } catch (error) {
@@ -139,8 +156,59 @@ export const getRecommendedWorkers = async (req, res) => {
 };
 
 export const searchWorkers = async (req, res) => {
-  // Implement search logic here
+  try {
+    const { name, designation, hourlyRate, minRating } = req.query;
+
+    let filteredWorkers=[];
+
+    if (name) {
+
+      const workersWithName = await Worker.find()
+        .populate({
+          path: 'user',
+          match: { name: { $regex: new RegExp(name, 'i') } }, // Case-insensitive search for name
+          select: '_id name',
+        })
+
+      filteredWorkers = workersWithName.filter(worker => worker.user !== null);
+    }
+
+
+    if (designation) {
+      filteredWorkers = filteredWorkers.filter(worker => worker.designation === designation);
+    }
+
+    if (hourlyRate) {
+      filteredWorkers = filteredWorkers.filter(worker => worker.hourly_rate === parseInt(hourlyRate));
+    }
+
+    if (minRating) {
+      const workersWithReviews = await Worker.find(query).populate({
+        path: 'reviews',
+        match: { rating: { $gte: parseInt(minRating) } },
+        select: '_id',
+      });
+
+      const workerIds = workersWithReviews.map(worker => worker._id);
+      const workers = await Worker.find({ _id: { $in: workerIds } });
+      return res.status(200).json(workers);
+    }
+
+    if (filteredWorkers.length === 0) {
+      return res.status(404).json({ message: "No workers found matching the criteria." });
+    }
+
+    return res.status(200).json(filteredWorkers);
+
+  } catch (error) {
+    console.error("No worker found:", error.message);
+    res.status(500).json({
+      message: "No worker found",
+      error: error.message,
+    });
+  }
 };
+
 
 export const workerDetails = async (req, res) => {
   try {
@@ -149,14 +217,14 @@ export const workerDetails = async (req, res) => {
     const worker = await Worker.findById(worker_id)
       .populate({
         path: "user",
-        select: "name email",
+        select: "name email address phone_number",
       })
       .populate({
         path: "reviews",
         populate: {
           path: "employer_id",
           model: User,
-          select: "name",
+          select: "name email  ",
         },
         select: "_id employer_id worker_id job_id rating review",
       });

@@ -14,6 +14,7 @@ const ChatBox = () => {
   const [user, setUser] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
   const { chat_id } = useParams();
+  const {chat_user} = useParams();
   const token = localStorage.getItem("token");
   const selectedChat = localStorage.getItem("selectedChat");
   const currentUrl = window.location.href;
@@ -53,6 +54,7 @@ const ChatBox = () => {
         }
 
         const data = await response.json();
+        console.log(data);
         setMessages(data);
 
         const otherUser =
@@ -113,7 +115,7 @@ const ChatBox = () => {
             <MdKeyboardDoubleArrowLeft className="text-2xl text-blue-600" />
           </Link>
           <FaUserCircle className="mr-2 text-2xl text-gray-800" />
-          <span className="text-lg font-semibold text-gray-800">{user}</span>
+          <span className="text-lg font-semibold text-gray-800">{chat_user}</span>
         </div>
       </div>
 
