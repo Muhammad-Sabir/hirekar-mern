@@ -123,25 +123,30 @@ export const getRecommendedJobs = async (req, res) => {
       worker_id: worker._id,
       status: { $in: ["completed", "pending"] },
     });
+
     if (pastJobs.length === 0) {
-      return res.status(404).json({ message: "No past jobs found" });
+      return res.status(200).json([]);
     }
 
     let totalDistance = 0;
     let totalPrice = 0;
     pastJobs.forEach((job) => {
+      console.log("Working", userLocation);
+      console.log("Working2", job.location.coordinates);
       totalDistance += calculateDistance(
         userLocation,
         job.location.coordinates
       );
       totalPrice += job.price_per_hour;
     });
+
     const avgDistance = totalDistance / pastJobs.length;
     const avgPrice = totalPrice / pastJobs.length;
 
     const maxDistance = avgDistance * 1.2;
     const minPrice = avgPrice * 0.8;
     const maxPrice = avgPrice * 1.2;
+
 
     const recommendedJobs = await Job.find({
       status: "unassigned",
