@@ -16,8 +16,8 @@ router.post("/create", authMiddleware, createJob);
 router.patch("/assign", authMiddleware, assignJob);
 router.patch("/update", authMiddleware, updateJob);
 router.get("/all", authMiddleware, getAllJobs);
-router.get("/recommended/:user_id", authMiddleware, getRecommendedJobs);
-router.get("/nearby/:user_id", authMiddleware, getNearbyJobs);
-router.get("/history/", authMiddleware, getJobHistory);
+router.get("/recommended", authMiddleware, getRecommendedJobs);
+router.get("/nearby", authMiddleware, getNearbyJobs);
+router.get("/history", authMiddleware, getJobHistory);
 
 export default router;
