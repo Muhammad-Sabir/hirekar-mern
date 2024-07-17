@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { GrUserWorker } from "react-icons/gr";
 import { BsChatSquareQuote } from "react-icons/bs";
-import { FaRegFileLines } from "react-icons/fa6";
 import { PiTableBold } from "react-icons/pi";
 import { MdOutlineFileCopy } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -31,16 +30,16 @@ const Sidebar = ({ isOpen }) => {
     sidebarItems = [
       { key: "jobs", icon: <GrUserWorker />, name: "Jobs", url: "/worker/" },
       {
-        key: "resume",
-        icon: <FaRegFileLines />,
-        name: "Resume",
-        url: "/worker/resume",
-      },
-      {
         key: "chats",
         icon: <BsChatSquareQuote />,
         name: "Chats",
         url: "/worker/chats",
+      },
+      {
+        key: "profile",
+        icon: <RiUserSettingsLine />,
+        name: "Profile",
+        url: "/worker/profile",
       },
     ];
   } else {
