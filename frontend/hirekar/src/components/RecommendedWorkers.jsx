@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import WorkerCard from "../../components/WorkerCard";
-import { calculateAverageRating } from "../../../utils/calculateAvgRating";
+import WorkerCard from "./WorkerCard";
+import { calculateAverageRating } from "../../utils/calculateAvgRating";
 
 function Recommendations() {
   const [workers, setWorkers] = useState([]);

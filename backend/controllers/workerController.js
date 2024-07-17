@@ -31,7 +31,8 @@ export const getAllWorkers = async (req, res) => {
 };
 
 export const getNearbyWorkers = async (req, res) => {
-  const { user_id } = req.params;
+  const user_id = req.user._id;
+  console.log(user_id)
 
   try {
     //fetch employer's address based on employerId
@@ -44,18 +45,35 @@ export const getNearbyWorkers = async (req, res) => {
     const latitude = employer.location.coordinates[1];
 
     //find nearby workers based on computed location
-    const radius = 30;
-    const workers = await User.find({
+    const radius = 20;
+    const users = await User.find({
       location: {
         $nearSphere: {
           $geometry: {
-            type: "Point",
+            type: 'Point',
             coordinates: [longitude, latitude],
           },
-          $maxDistance: radius * 1000,
+          $maxDistance: radius * 1000, // radius in meters
         },
       },
-      role: "worker",
+      role: 'worker',
+    }).select('_id name email phone_number location role');
+
+    // Extract user IDs
+    const userIds = users.map(user => user._id);
+
+    // Step 2: Find workers with these user IDs
+    const workers = await Worker.find({ user: { $in: userIds } }).populate({
+      path: 'user',
+      select: 'name email phone_number location role',
+    }).populate({
+      path: 'reviews',
+      select: '_id employer_id worker_id job_id rating review',
+      populate: {
+        path: 'employer_id',
+        model: 'User',
+        select: 'name',
+      }
     });
 
     const responseObject = {
@@ -93,7 +111,7 @@ export const getRecommendedWorkers = async (req, res) => {
     });
 
     if (Object.keys(designationCount).length === 0) {
-      return res.status(200).json( []);
+      return res.status(200).json([]);
     }
 
     // Find the most frequent designation
@@ -130,14 +148,14 @@ export const getRecommendedWorkers = async (req, res) => {
     // Find workers based on the criteria
     const recommendedWorkers = await Worker.find({
       designation: mostFrequentDesignation,
-      "location.coordinates": {
-        $geoWithin: {
-          $centerSphere: [
-            [averageCoordinates.longitude, averageCoordinates.latitude],
-            distanceRange / 6378.1,
-          ], // 6378.1 km is the radius of the Earth
-        },
-      },
+      /*  "user.location.coordinates": {
+         $geoWithin: {
+           $centerSphere: [
+             [averageCoordinates.longitude, averageCoordinates.latitude],
+             distanceRange / 6378.1,
+           ], // 6378.1 km is the radius of the Earth
+         },
+       }, */
       hourly_rate: { $gte: priceRange[0], $lte: priceRange[1] },
     })
       .populate({

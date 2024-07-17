@@ -7,7 +7,6 @@ import Jobs from "./pages/worker/Jobs";
 import Resume from "./pages/worker/Resume";
 import ChatBox from "./components/ChatBox";
 import RecentChats from "./pages/RecentChats";
-import Recommendations from "./pages/employer/Recommendations";
 import HiringForm from "./pages/employer/HiringForm";
 import JobPostingForm from "./pages/employer/JobPostingForm";
 import JobPostings from "./pages/employer/JobPostings";
@@ -15,6 +14,7 @@ import Workers from "./pages/employer/Workers";
 import Profile from "./pages/employer/Profile";
 import OtpForm from "./pages/OtpForm";
 import WorkerDetailPage from "./pages/employer/WorkerDetailPage";
+import TopPicks from "./pages/employer/TopPicks";
 
 function App() {
   const router = createBrowserRouter([
@@ -70,7 +70,7 @@ function App() {
       path: "/employer/recommendations",
       element: (
         <Layout>
-          <Recommendations />
+          <TopPicks />
         </Layout>
       ),
     },
