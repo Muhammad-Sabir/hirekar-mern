@@ -193,7 +193,7 @@ export const getJobHistory = async (req, res) => {
 };
 
 export const getNearbyJobs = async (req, res) => {
-  const { user_id } = req.params;
+  const user_id = req.user._id;
 
   try {
     // find the worker by ID

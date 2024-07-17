@@ -93,7 +93,7 @@ export const getRecommendedWorkers = async (req, res) => {
     });
 
     if (Object.keys(designationCount).length === 0) {
-      return res.status(200).json( []);
+      return res.status(200).json([]);
     }
 
     // Find the most frequent designation
@@ -156,64 +156,6 @@ export const getRecommendedWorkers = async (req, res) => {
   } catch (error) {
     console.error("Error fetching recommended workers:", error);
     return res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-export const searchWorkers = async (req, res) => {
-  try {
-    const { name, designation, hourlyRate, minRating } = req.query;
-
-    let filteredWorkers = [];
-
-    if (name) {
-      const workersWithName = await Worker.find().populate({
-        path: "user",
-        match: { name: { $regex: new RegExp(name, "i") } }, // Case-insensitive search for name
-        select: "_id name",
-      });
-
-      filteredWorkers = workersWithName.filter(
-        (worker) => worker.user !== null
-      );
-    }
-
-    if (designation) {
-      filteredWorkers = filteredWorkers.filter(
-        (worker) => worker.designation === designation
-      );
-    }
-
-    if (hourlyRate) {
-      filteredWorkers = filteredWorkers.filter(
-        (worker) => worker.hourly_rate === parseInt(hourlyRate)
-      );
-    }
-
-    if (minRating) {
-      const workersWithReviews = await Worker.find(query).populate({
-        path: "reviews",
-        match: { rating: { $gte: parseInt(minRating) } },
-        select: "_id",
-      });
-
-      const workerIds = workersWithReviews.map((worker) => worker._id);
-      const workers = await Worker.find({ _id: { $in: workerIds } });
-      return res.status(200).json(workers);
-    }
-
-    if (filteredWorkers.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No workers found matching the criteria." });
-    }
-
-    return res.status(200).json(filteredWorkers);
-  } catch (error) {
-    console.error("No worker found:", error.message);
-    res.status(500).json({
-      message: "No worker found",
-      error: error.message,
-    });
   }
 };
 
