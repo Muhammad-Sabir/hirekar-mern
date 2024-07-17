@@ -171,9 +171,17 @@ export const getJobHistory = async (req, res) => {
 
     let jobs;
     if (role === "worker") {
-      jobs = await Job.find({ worker_id: user_id })
+      const worker = await Worker.findOne({ user: user_id });
+      if (!worker) {
+          return res.status(404).json({ message: "Worker not found" });
+      }
+
+      const worker_id = worker._id;
+      jobs = await Job.find({ worker_id })
         .populate("employer_id", "name email")
         .sort({ createdAt: -1 });
+      
+
     } else if (role === "employer") {
       jobs = await Job.find({ employer_id: user_id })
         .populate({

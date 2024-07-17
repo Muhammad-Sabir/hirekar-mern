@@ -5,6 +5,7 @@ import { PiTableBold } from "react-icons/pi";
 import { MdOutlineFileCopy } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { RiUserSettingsLine } from "react-icons/ri";
+import { IoDocuments } from "react-icons/io5";
 
 // eslint-disable-next-line react/prop-types
 const Sidebar = ({ isOpen }) => {
@@ -29,6 +30,12 @@ const Sidebar = ({ isOpen }) => {
   if (hasWorkerPath) {
     sidebarItems = [
       { key: "jobs", icon: <GrUserWorker />, name: "Jobs", url: "/worker/" },
+      {
+        key: "jobsHistory",
+        icon: <IoDocuments />,
+        name: "Your Jobs",
+        url: "/worker/jobHistory",
+      },
       {
         key: "chats",
         icon: <BsChatSquareQuote />,

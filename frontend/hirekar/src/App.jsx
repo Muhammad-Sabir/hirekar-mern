@@ -16,6 +16,7 @@ import WorkerDetailPage from "./pages/employer/WorkerDetailPage";
 import Chatbot from "./components/ChatBot";
 import TopPicks from "./pages/employer/TopPicks";
 import WorkerProfile from "./pages/worker/WorkerProfile";
+import JobsHistory from "./pages/worker/JobsHistory";
 
 function App() {
   const router = createBrowserRouter([
@@ -40,6 +41,14 @@ function App() {
       element: (
         <Layout>
           <Jobs />
+        </Layout>
+      ),
+    },
+    {
+      path: "/worker/jobHistory",
+      element: (
+        <Layout>
+          <JobsHistory />
         </Layout>
       ),
     },
