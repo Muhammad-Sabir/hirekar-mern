@@ -8,9 +8,8 @@ import {
 
 export const createJob = async (req, res) => {
   try {
-    const { title, description, price_per_hour, hours, address } =
-      req.body;
-    
+    const { title, description, price_per_hour, hours, address } = req.body;
+
     const employer_id = req.user._id;
 
     const user = await User.findById(employer_id);
@@ -25,7 +24,8 @@ export const createJob = async (req, res) => {
         .json({ message: "Only employers can create jobs" });
     }
 
-    let longitude, latitude = 0;
+    let longitude,
+      latitude = 0;
     try {
       ({ longitude, latitude } = await getAddressCordinates(address));
     } catch (error) {
@@ -39,7 +39,7 @@ export const createJob = async (req, res) => {
       status: "unassigned",
       price_per_hour,
       hours,
-      location: { "type": "Point", "coordinates": [longitude, latitude]}
+      location: { type: "Point", coordinates: [longitude, latitude] },
     });
     await job.save();
 
@@ -93,12 +93,12 @@ export const getAllJobs = async (req, res) => {
     const jobs = await Job.find()
       .populate("employer_id", "name email")
       .populate({
-        path: 'worker_id',
-        select: 'user',
+        path: "worker_id",
+        select: "user",
         populate: {
-          path: 'user',
-          select: 'name'
-        }
+          path: "user",
+          select: "name",
+        },
       });
 
     res.status(200).json(jobs);
@@ -166,19 +166,18 @@ export const getRecommendedJobs = async (req, res) => {
 
 export const getJobHistory = async (req, res) => {
   try {
-    const { user_id, role } = req.params;
+    const user_id = req.user._id;
+    const role = req.user.role;
 
     let jobs;
     if (role === "worker") {
-      jobs = await Job.find({ worker_id: user_id }).populate(
-        "employer_id",
-        "name email"
-      );
+      jobs = await Job.find({ worker_id: user_id })
+        .populate("employer_id", "name email")
+        .sort({ createdAt: -1 });
     } else if (role === "employer") {
-      jobs = await Job.find({ employer_id: user_id }).populate(
-        "worker_id",
-        "name email"
-      );
+      jobs = await Job.find({ employer_id: user_id })
+        .populate("worker_id", "name email")
+        .sort({ createdAt: -1 });
     }
 
     res.status(200).json(jobs);
@@ -198,7 +197,7 @@ export const getNearbyJobs = async (req, res) => {
     }
 
     const longitude = worker.location.coordinates[0];
-    const latitude = worker.location.coordinates[1]
+    const latitude = worker.location.coordinates[1];
 
     // define the search radius
     const radius = 30 * 1000;

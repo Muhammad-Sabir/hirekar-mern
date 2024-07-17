@@ -22,7 +22,9 @@ import jobRoutes from "./routes/jobRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import workerRoutes from "./routes/workerRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import chatbotRoutes from "./routes/chatbotRoutes.js";
 
+app.use("/api/chatbot", chatbotRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/job", jobRoutes);

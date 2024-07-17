@@ -18,6 +18,6 @@ router.patch("/update", authMiddleware, updateJob);
 router.get("/all", authMiddleware, getAllJobs);
 router.get("/recommended/:user_id", authMiddleware, getRecommendedJobs);
 router.get("/nearby/:user_id", authMiddleware, getNearbyJobs);
-router.get("/history/:user_id/:role", authMiddleware, getJobHistory);
+router.get("/history/", authMiddleware, getJobHistory);
 
 export default router;

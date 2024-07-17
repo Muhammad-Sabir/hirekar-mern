@@ -1,7 +1,10 @@
 import Worker from "../models/workerModel.js";
 import User from "../models/userModel.js";
 import Job from "../models/jobModel.js";
-import {calculateDistance, calculateAverageLocation} from "../utils/locationServices.js";
+import {
+  calculateDistance,
+  calculateAverageLocation,
+} from "../utils/locationServices.js";
 
 export const getAllWorkers = async (req, res) => {
   try {
@@ -38,7 +41,7 @@ export const getNearbyWorkers = async (req, res) => {
     }
 
     const longitude = employer.location.coordinates[0];
-    const latitude = employer.location.coordinates[1]
+    const latitude = employer.location.coordinates[1];
 
     //find nearby workers based on computed location
     const radius = 30;
@@ -51,8 +54,9 @@ export const getNearbyWorkers = async (req, res) => {
           },
           $maxDistance: radius * 1000,
         },
-      },role: 'worker'
-    })
+      },
+      role: "worker",
+    });
 
     const responseObject = {
       emp_coordinates: [longitude, latitude],
@@ -67,18 +71,15 @@ export const getNearbyWorkers = async (req, res) => {
 };
 
 export const getRecommendedWorkers = async (req, res) => {
-  try {
-    const employerId = req.user._id;
+  const employerId = req.user._id;
 
-    // Fetch all jobs for the current employer
+  try {
     const jobs = await Job.find({ employer_id: employerId }).populate(
       "worker_id"
     );
 
     if (!jobs.length) {
-      return res
-        .status(404)
-        .json({ message: "No jobs found for the employer" });
+      return res.status(200).json([]);
     }
 
     // Count the number of jobs per worker designation
@@ -91,10 +92,16 @@ export const getRecommendedWorkers = async (req, res) => {
       }
     });
 
+    if (Object.keys(designationCount).length === 0) {
+      return res.status(200).json( []);
+    }
+
     // Find the most frequent designation
     const mostFrequentDesignation = Object.keys(designationCount).reduce(
       (a, b) => (designationCount[a] > designationCount[b] ? a : b)
     );
+
+    console.log("Job found", mostFrequentDesignation);
 
     // Get the locations and prices for jobs with the most frequent designation
     const frequentDesignationJobs = jobs.filter(
@@ -123,30 +130,29 @@ export const getRecommendedWorkers = async (req, res) => {
     // Find workers based on the criteria
     const recommendedWorkers = await Worker.find({
       designation: mostFrequentDesignation,
-      /* "location.coordinates": {
+      "location.coordinates": {
         $geoWithin: {
           $centerSphere: [
             [averageCoordinates.longitude, averageCoordinates.latitude],
             distanceRange / 6378.1,
           ], // 6378.1 km is the radius of the Earth
         },
-      }, */
+      },
       hourly_rate: { $gte: priceRange[0], $lte: priceRange[1] },
     })
-    .populate({
-      path: "user",
-      select: "name email phone_number",
-    })
-    .populate({
-      path: "reviews",
-      populate: {
-        path: "employer_id",
-        model: User,
-        model: User,
-        select: "name",
-      },
-      select: "_id employer_id worker_id job_id rating review",
-    });
+      .populate({
+        path: "user",
+        select: "name email phone_number",
+      })
+      .populate({
+        path: "reviews",
+        populate: {
+          path: "employer_id",
+          model: User,
+          select: "name",
+        },
+        select: "_id employer_id worker_id job_id rating review",
+      });
 
     return res.status(200).json(recommendedWorkers);
   } catch (error) {
@@ -159,47 +165,51 @@ export const searchWorkers = async (req, res) => {
   try {
     const { name, designation, hourlyRate, minRating } = req.query;
 
-    let filteredWorkers=[];
+    let filteredWorkers = [];
 
     if (name) {
+      const workersWithName = await Worker.find().populate({
+        path: "user",
+        match: { name: { $regex: new RegExp(name, "i") } }, // Case-insensitive search for name
+        select: "_id name",
+      });
 
-      const workersWithName = await Worker.find()
-        .populate({
-          path: 'user',
-          match: { name: { $regex: new RegExp(name, 'i') } }, // Case-insensitive search for name
-          select: '_id name',
-        })
-
-      filteredWorkers = workersWithName.filter(worker => worker.user !== null);
+      filteredWorkers = workersWithName.filter(
+        (worker) => worker.user !== null
+      );
     }
 
-
     if (designation) {
-      filteredWorkers = filteredWorkers.filter(worker => worker.designation === designation);
+      filteredWorkers = filteredWorkers.filter(
+        (worker) => worker.designation === designation
+      );
     }
 
     if (hourlyRate) {
-      filteredWorkers = filteredWorkers.filter(worker => worker.hourly_rate === parseInt(hourlyRate));
+      filteredWorkers = filteredWorkers.filter(
+        (worker) => worker.hourly_rate === parseInt(hourlyRate)
+      );
     }
 
     if (minRating) {
       const workersWithReviews = await Worker.find(query).populate({
-        path: 'reviews',
+        path: "reviews",
         match: { rating: { $gte: parseInt(minRating) } },
-        select: '_id',
+        select: "_id",
       });
 
-      const workerIds = workersWithReviews.map(worker => worker._id);
+      const workerIds = workersWithReviews.map((worker) => worker._id);
       const workers = await Worker.find({ _id: { $in: workerIds } });
       return res.status(200).json(workers);
     }
 
     if (filteredWorkers.length === 0) {
-      return res.status(404).json({ message: "No workers found matching the criteria." });
+      return res
+        .status(404)
+        .json({ message: "No workers found matching the criteria." });
     }
 
     return res.status(200).json(filteredWorkers);
-
   } catch (error) {
     console.error("No worker found:", error.message);
     res.status(500).json({
@@ -208,7 +218,6 @@ export const searchWorkers = async (req, res) => {
     });
   }
 };
-
 
 export const workerDetails = async (req, res) => {
   try {
