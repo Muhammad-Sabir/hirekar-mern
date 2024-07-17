@@ -10,7 +10,7 @@ import { authMiddleware } from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 router.get("/all", authMiddleware, getAllWorkers);
-router.get("/nearby/:user_id", authMiddleware, getNearbyWorkers);
+router.get("/nearby/", authMiddleware, getNearbyWorkers);
 router.get("/recommended", authMiddleware, getRecommendedWorkers);
 router.get("/:worker_id", authMiddleware, workerDetails);
 
