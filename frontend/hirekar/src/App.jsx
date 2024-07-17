@@ -4,7 +4,6 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Layout from "./layouts/Layout";
 import Jobs from "./pages/worker/Jobs";
-import Resume from "./pages/worker/Resume";
 import ChatBox from "./components/ChatBox";
 import RecentChats from "./pages/RecentChats";
 import HiringForm from "./pages/employer/HiringForm";
@@ -16,6 +15,7 @@ import OtpForm from "./pages/OtpForm";
 import WorkerDetailPage from "./pages/employer/WorkerDetailPage";
 import Chatbot from "./components/ChatBot";
 import TopPicks from "./pages/employer/TopPicks";
+import WorkerProfile from "./pages/worker/WorkerProfile";
 
 function App() {
   const router = createBrowserRouter([
@@ -52,7 +52,7 @@ function App() {
       ),
     },
     {
-      path: "/worker/chats/:chat_id",
+      path: "/worker/chats/:chat_id/:chat_user",
       element: (
         <Layout>
           <ChatBox />
@@ -60,10 +60,10 @@ function App() {
       ),
     },
     {
-      path: "/worker/resume",
+      path: "/worker/profile",
       element: (
         <Layout>
-          <Resume />
+          <WorkerProfile />
         </Layout>
       ),
     },

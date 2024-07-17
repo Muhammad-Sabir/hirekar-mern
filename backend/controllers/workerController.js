@@ -45,7 +45,7 @@ export const getNearbyWorkers = async (req, res) => {
     const latitude = employer.location.coordinates[1];
 
     //find nearby workers based on computed location
-    const radius = 20;
+    const radius = 10;
     const users = await User.find({
       location: {
         $nearSphere: {

@@ -60,7 +60,7 @@ const RecentChats = () => {
               key={index}
               to={
                 hasWorkerPath
-                  ? `/worker/chats/${chat._id}/${chat.users[1].name}`
+                  ? `/worker/chats/${chat._id}/${chat.users[0].name}`
                   : `/employer/chats/${chat._id}/${chat.users[1].name}`
               }
               className="block p-4 transition duration-300 ease-in-out rounded-lg shadow-md hover:shadow-lg hover:bg-gray-100"
