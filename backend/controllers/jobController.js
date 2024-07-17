@@ -176,7 +176,13 @@ export const getJobHistory = async (req, res) => {
         .sort({ createdAt: -1 });
     } else if (role === "employer") {
       jobs = await Job.find({ employer_id: user_id })
-        .populate("worker_id", "name email")
+        .populate({
+          path: "worker_id",
+          populate: {
+            path: "user",
+            model: User,
+          },
+        })
         .sort({ createdAt: -1 });
     }
 

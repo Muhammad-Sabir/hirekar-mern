@@ -14,7 +14,7 @@ import Workers from "./pages/employer/Workers";
 import Profile from "./pages/employer/Profile";
 import OtpForm from "./pages/OtpForm";
 import WorkerDetailPage from "./pages/employer/WorkerDetailPage";
-import TopPicks from "./pages/employer/TopPicks";
+import Chatbot from "./components/ChatBot";
 
 function App() {
   const router = createBrowserRouter([
@@ -82,7 +82,6 @@ function App() {
         </Layout>
       ),
     },
-    
 
     {
       path: "/employer/chats",
@@ -104,7 +103,7 @@ function App() {
       path: "/employer/hire/:user/:user_id",
       element: (
         <Layout>
-          <HiringForm/>
+          <HiringForm />
         </Layout>
       ),
     },
@@ -112,7 +111,7 @@ function App() {
       path: "/employer/:worker_id",
       element: (
         <Layout>
-          <WorkerDetailPage/>
+          <WorkerDetailPage />
         </Layout>
       ),
     },
@@ -120,7 +119,7 @@ function App() {
       path: "/employer/jobPostings",
       element: (
         <Layout>
-          <JobPostings/>
+          <JobPostings />
         </Layout>
       ),
     },
@@ -128,7 +127,7 @@ function App() {
       path: "/employer/jobPostingForm",
       element: (
         <Layout>
-          <JobPostingForm/>
+          <JobPostingForm />
         </Layout>
       ),
     },
@@ -136,16 +135,16 @@ function App() {
       path: "/employer/profile",
       element: (
         <Layout>
-          <Profile/>
+          <Profile />
         </Layout>
       ),
     },
-
   ]);
 
   return (
     <>
       <RouterProvider router={router} />
+      <Chatbot />
     </>
   );
 }
