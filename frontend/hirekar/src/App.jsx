@@ -15,6 +15,7 @@ import Profile from "./pages/employer/Profile";
 import OtpForm from "./pages/OtpForm";
 import WorkerDetailPage from "./pages/employer/WorkerDetailPage";
 import Chatbot from "./components/ChatBot";
+import TopPicks from "./pages/employer/TopPicks";
 
 function App() {
   const router = createBrowserRouter([
