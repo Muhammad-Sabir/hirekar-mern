@@ -101,8 +101,6 @@ export const getRecommendedWorkers = async (req, res) => {
       (a, b) => (designationCount[a] > designationCount[b] ? a : b)
     );
 
-    console.log("Job found", mostFrequentDesignation);
-
     // Get the locations and prices for jobs with the most frequent designation
     const frequentDesignationJobs = jobs.filter(
       (job) =>
