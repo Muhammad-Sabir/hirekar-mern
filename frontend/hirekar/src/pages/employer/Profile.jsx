@@ -61,6 +61,7 @@ const Profile = () => {
             });
             const data = await response.json();
             console.log('Profile updated:', data);
+            alert("Profile Updated Successfully")
         } catch (error) {
             console.error('Error updating profile:', error);
         }

@@ -101,7 +101,7 @@ const Jobs = () => {
                 body: JSON.stringify(jobData),
             });
             if (response.ok) {
-                // Job updated successfully
+                alert(`Job status is updated as: ${jobData.status}`)
             } else {
                 console.error('Failed to update job');
                 // Handle error

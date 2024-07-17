@@ -69,6 +69,7 @@ const WorkerProfile = () => {
             });
             const data = await response.json();
             console.log('Profile updated:', data);
+            alert("Profile has been updated successfully");
         } catch (error) {
             console.error('Error updating profile:', error);
         }

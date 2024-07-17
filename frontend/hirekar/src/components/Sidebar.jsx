@@ -29,12 +29,12 @@ const Sidebar = ({ isOpen }) => {
 
   if (hasWorkerPath) {
     sidebarItems = [
-      { key: "jobs", icon: <GrUserWorker />, name: "Jobs", url: "/worker/" },
+      { key: "jobsHistory", icon: <IoDocuments />, name: "Your Jobs", url: "/worker/" },
       {
-        key: "jobsHistory",
-        icon: <IoDocuments />,
-        name: "Your Jobs",
-        url: "/worker/jobHistory",
+        key: "recommendations",
+        icon: <GrUserWorker />,
+        name: "Top Picks",
+        url: "/worker/recommendations",
       },
       {
         key: "chats",

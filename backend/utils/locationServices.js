@@ -4,25 +4,25 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const calculateAverageLocation = (locations) => {
-  if (locations.length === 1) {
-    const { lat, lon } = locations[0];
-    return { latitude: parseFloat(lat), longitude: parseFloat(lon) };
-  } else if (locations.length > 1) {
-    let totalLat = 0,
-      totalLon = 0;
+    
+    if (locations.length === 1) {
+        const { lat, lon } = locations[0];
+        return { latitude: parseFloat(lat), longitude: parseFloat(lon) };
+    } else if (locations.length > 1) {
+        let totalLat = 0, totalLon = 0;
 
-    locations.forEach((location) => {
-      totalLat += parseFloat(location[1]);
-      totalLon += parseFloat(location[0]);
-    });
+        locations.forEach((location) => {
+            totalLat += parseFloat(location.lat);
+            totalLon += parseFloat(location.lon);
+        });
 
-    const latitude = totalLat / locations.length;
-    const longitude = totalLon / locations.length;
+        const latitude = totalLat / locations.length;
+        const longitude = totalLon / locations.length;
 
-    return [longitude, latitude];
-  } else {
-    throw new Error("No location data found");
-  }
+        return { longitude, latitude };
+    } else {
+        throw new Error("No location data found");
+    }
 };
 
 function simplifyAddress(address) {
@@ -51,7 +51,7 @@ export const getAddressCordinates = async (address) => {
     const url = `https://geocode.maps.co/search?q=${encodeURIComponent(
       formattedAddress
     )}&api_key=${process.env.GEOCODE_API_KEY}`;
-    console.log(url);
+    console.log("url is", url);
     const response = await axios.get(url);
     console.log(response.data);
 
@@ -60,8 +60,6 @@ export const getAddressCordinates = async (address) => {
     }
 
     const { longitude, latitude } = calculateAverageLocation(response.data);
-    console.log(longitude, latitude);
-
     if (longitude == 0) {
       console.log("hello  ");
     }

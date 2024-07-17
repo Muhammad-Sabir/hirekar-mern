@@ -104,6 +104,8 @@ const ChatBox = () => {
     }
   };
 
+  console.log(messages);
+
   return (
     <>
       <div className="flex items-center justify-between w-full p-4 bg-white border-b border-gray-200 shadow-md">
@@ -125,18 +127,18 @@ const ChatBox = () => {
             <div
               key={msg._id}
               className={`flex ${
-                msg.sender_id._id === chat_id ? "justify-end" : "justify-start"
+                msg.sender_id.name === chat_user ?  "justify-start":"justify-end"
               } mb-4`}
             >
               <div
                 className={`max-w-xs mx-2 px-4 py-2 rounded-lg shadow-md ${
-                  msg.sender_id._id === chat_id
+                  msg.sender_id.name === chat_user
                     ? "bg-blue-600 text-white self-end"
                     : "bg-white text-gray-800"
                 }`}
               >
                 <p>
-                  {msg.sender_id._id === chat_id ? "You" : user}: {msg.content}
+                  {msg.sender_id.name === chat_user ? user: "You"}: {msg.content}
                 </p>
               </div>
             </div>

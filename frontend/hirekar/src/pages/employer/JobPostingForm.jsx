@@ -45,6 +45,7 @@ const JobPostingForm = () => {
 
             const data = await response.json();
             console.log('Job created successfully:', data);
+            alert("Job Added Successfully");
             // You can also reset the form here if needed
             setFormData({
                 title: '',

@@ -48,6 +48,7 @@ const HiringForm = () => {
             });
             const result = await response.json();
             console.log('Job assigned:', result);
+            alert(`Request to ${user} has been sent to accept the job offer`)
         } catch (error) {
             console.error('Error assigning job:', error);
         }

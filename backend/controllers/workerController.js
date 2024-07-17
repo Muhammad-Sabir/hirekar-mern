@@ -151,11 +151,11 @@ export const getRecommendedWorkers = async (req, res) => {
     // Find workers based on the criteria
     const recommendedWorkers = await Worker.find({
       designation: mostFrequentDesignation,
-      "user.location.coordinates": {
+/*       "user.location.coordinates": {
         $geoWithin: {
           $centerSphere: [averageCoordinates, distanceRange / 3963.2],
         },
-      },
+      }, */
       hourly_rate: { $gte: priceRange[0], $lte: priceRange[1] },
     })
       .populate({

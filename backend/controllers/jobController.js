@@ -46,6 +46,7 @@ export const createJob = async (req, res) => {
     res.status(201).json(job);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong", error });
+    console.log(error.message);
   }
 };
 

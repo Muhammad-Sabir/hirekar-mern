@@ -3,7 +3,6 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Layout from "./layouts/Layout";
-import Jobs from "./pages/worker/Jobs";
 import ChatBox from "./components/ChatBox";
 import RecentChats from "./pages/RecentChats";
 import HiringForm from "./pages/employer/HiringForm";
@@ -17,6 +16,7 @@ import Chatbot from "./components/ChatBot";
 import TopPicks from "./pages/employer/TopPicks";
 import WorkerProfile from "./pages/worker/WorkerProfile";
 import JobsHistory from "./pages/worker/JobsHistory";
+import WorkerTopPicks from "./pages/worker/WorkerTopPicks";
 
 function App() {
   const router = createBrowserRouter([
@@ -40,15 +40,15 @@ function App() {
       path: "/worker/",
       element: (
         <Layout>
-          <Jobs />
+          <JobsHistory />
         </Layout>
       ),
     },
     {
-      path: "/worker/jobHistory",
+      path: "/worker/recommendations",
       element: (
         <Layout>
-          <JobsHistory />
+          <WorkerTopPicks />
         </Layout>
       ),
     },
