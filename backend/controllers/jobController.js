@@ -72,7 +72,7 @@ export const updateJob = async (req, res) => {
     if (status === "unassigned") {
       job = await Job.findByIdAndUpdate(
         job_id,
-        { status, worker_id: null },
+        { status, price_per_hour, hours, worker_id: null },
         { new: true }
       );
     } else {
@@ -114,6 +114,8 @@ export const getRecommendedJobs = async (req, res) => {
 
     const worker = await Worker.findOne({ user: userId }).populate("user");
 
+    console.log(worker);
+
     if (!worker) {
       return res.status(404).json({ message: "Worker not found" });
     }
@@ -132,8 +134,6 @@ export const getRecommendedJobs = async (req, res) => {
     let totalDistance = 0;
     let totalPrice = 0;
     pastJobs.forEach((job) => {
-      console.log("Working", userLocation);
-      console.log("Working2", job.location.coordinates);
       totalDistance += calculateDistance(
         userLocation,
         job.location.coordinates
@@ -147,7 +147,6 @@ export const getRecommendedJobs = async (req, res) => {
     const maxDistance = avgDistance * 1.2;
     const minPrice = avgPrice * 0.8;
     const maxPrice = avgPrice * 1.2;
-
 
     const recommendedJobs = await Job.find({
       status: "unassigned",
@@ -179,15 +178,13 @@ export const getJobHistory = async (req, res) => {
     if (role === "worker") {
       const worker = await Worker.findOne({ user: user_id });
       if (!worker) {
-          return res.status(404).json({ message: "Worker not found" });
+        return res.status(404).json({ message: "Worker not found" });
       }
 
       const worker_id = worker._id;
       jobs = await Job.find({ worker_id })
         .populate("employer_id", "name email")
         .sort({ createdAt: -1 });
-      
-
     } else if (role === "employer") {
       jobs = await Job.find({ employer_id: user_id })
         .populate({
