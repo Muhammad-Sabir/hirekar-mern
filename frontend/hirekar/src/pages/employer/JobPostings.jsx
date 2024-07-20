@@ -128,13 +128,8 @@ const JobPostings = () => {
 
   const handleOfferUpdate = async (action) => {
     const newJob = { ...selectedJob, status: action };
-    console.log(newJob);
 
-    if (action === "unassigned") {
-      newJob.worker_id = null;
-    }
-
-    console.log(newJob);
+    console.log(selectedJob);
 
     const response = await fetch("http://localhost:8000/api/job/update", {
       method: "PATCH",
@@ -147,7 +142,6 @@ const JobPostings = () => {
         status: action,
         price_per_hour: newJob.price_per_hour,
         hours: newJob.hours,
-        worker_id: newJob.worker_id,
       }),
     });
 
@@ -166,9 +160,17 @@ const JobPostings = () => {
     }
   };
 
-  const handleMarkCompletedClick = async (job) => {
-    console.log("Completed: ", job);
+  const handleCompletedClick = (job) => {
+    job.status = "completed";
+
+    setSelectedJob(job);
   };
+
+  useEffect(() => {
+    if (selectedJob && selectedJob.status === "completed") {
+      handleOfferUpdate("completed");
+    }
+  }, [selectedJob]);
 
   const handleSetRating = (val) => {
     console.log("Setting rating, ", val);
@@ -204,7 +206,7 @@ const JobPostings = () => {
       return (
         <>
           <button
-            onClick={() => handleMarkCompletedClick(job)}
+            onClick={() => handleCompletedClick(job)}
             className="text-blue-500 hover:underline focus:outline-none"
           >
             Mark Completed

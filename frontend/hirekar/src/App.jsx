@@ -17,6 +17,7 @@ import TopPicks from "./pages/employer/TopPicks";
 import WorkerProfile from "./pages/worker/WorkerProfile";
 import JobsHistory from "./pages/worker/JobsHistory";
 import WorkerTopPicks from "./pages/worker/WorkerTopPicks";
+import Jobs from "./pages/worker/Jobs";
 
 function App() {
   const router = createBrowserRouter([
@@ -38,6 +39,14 @@ function App() {
     },
     {
       path: "/worker/",
+      element: (
+        <Layout>
+          <Jobs />
+        </Layout>
+      ),
+    },
+    {
+      path: "/worker/history",
       element: (
         <Layout>
           <JobsHistory />

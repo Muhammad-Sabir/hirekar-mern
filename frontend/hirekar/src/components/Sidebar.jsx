@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { GrUserWorker } from "react-icons/gr";
+import { IoMdTrendingUp } from "react-icons/io";
 import { BsChatSquareQuote } from "react-icons/bs";
 import { PiTableBold } from "react-icons/pi";
 import { MdOutlineFileCopy } from "react-icons/md";
@@ -29,10 +30,11 @@ const Sidebar = ({ isOpen }) => {
 
   if (hasWorkerPath) {
     sidebarItems = [
-      { key: "jobsHistory", icon: <IoDocuments />, name: "Your Jobs", url: "/worker/" },
+      { key: "jobs", icon: <GrUserWorker />, name: "Jobs", url: "/worker/" },
+      { key: "jobsHistory", icon: <IoDocuments />, name: "Your Jobs", url: "/worker/history" },
       {
         key: "recommendations",
-        icon: <GrUserWorker />,
+        icon: <IoMdTrendingUp />,
         name: "Top Picks",
         url: "/worker/recommendations",
       },
