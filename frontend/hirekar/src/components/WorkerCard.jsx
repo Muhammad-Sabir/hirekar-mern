@@ -34,7 +34,7 @@ function WorkerCard({
       }
 
       const chatData = await response.json();
-      console.log(chatData);
+      console.log("Chat Data", chatData);
       navigate(`/employer/chats/${chatData._id}/${chatData.users[1].name}`)
       
     } catch (error) {
@@ -73,7 +73,7 @@ function WorkerCard({
         </Link>
         <button
           onClick={handleChatClick}
-          className="w-full block text-center px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700"
+          className="block w-full px-4 py-2 font-bold text-center text-white bg-green-500 rounded hover:bg-green-700"
           disabled={loading}
         >
           {loading ? "Loading..." : "Chat"}

@@ -14,7 +14,7 @@ const ChatBox = () => {
   const [user, setUser] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
   const { chat_id } = useParams();
-  const {chat_user} = useParams();
+  const { chat_user } = useParams();
   const token = localStorage.getItem("token");
   const selectedChat = localStorage.getItem("selectedChat");
   const currentUrl = window.location.href;
@@ -117,7 +117,9 @@ const ChatBox = () => {
             <MdKeyboardDoubleArrowLeft className="text-2xl text-blue-600" />
           </Link>
           <FaUserCircle className="mr-2 text-2xl text-gray-800" />
-          <span className="text-lg font-semibold text-gray-800">{chat_user}</span>
+          <span className="text-lg font-semibold text-gray-800">
+            {chat_user}
+          </span>
         </div>
       </div>
 
@@ -127,7 +129,9 @@ const ChatBox = () => {
             <div
               key={msg._id}
               className={`flex ${
-                msg.sender_id.name === chat_user ?  "justify-start":"justify-end"
+                msg.sender_id.name === chat_user
+                  ? "justify-start"
+                  : "justify-end"
               } mb-4`}
             >
               <div
@@ -138,7 +142,8 @@ const ChatBox = () => {
                 }`}
               >
                 <p>
-                  {msg.sender_id.name === chat_user ? user: "You"}: {msg.content}
+                  {msg.sender_id.name === chat_user ? chat_user : "You"}:{" "}
+                  {msg.content}
                 </p>
               </div>
             </div>

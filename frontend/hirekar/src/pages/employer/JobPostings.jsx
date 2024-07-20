@@ -31,11 +31,12 @@ const truncateDescription = (description, wordLimit) => {
 
 const JobPostings = () => {
   const [jobs, setJobs] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobileView, setIsMobileView] = useState(false);
-  const [selectedJob, setSelectedJob] = useState(null);
   const jobsPerPage = 10;
   const [showModal, setShowModal] = useState(false);
+  const [showOfferModal, setShowOfferModal] = useState(false);
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
 
@@ -115,6 +116,106 @@ const JobPostings = () => {
     }
   };
 
+  const handleViewOfferClick = (job) => {
+    setSelectedJob(job);
+    setShowOfferModal(true);
+  };
+
+  const handleOfferModalClose = () => {
+    setShowOfferModal(false);
+    setSelectedJob(null);
+  };
+
+  const handleOfferUpdate = async (action) => {
+    const newJob = { ...selectedJob, status: action };
+    console.log(newJob);
+
+    if (action === "unassigned") {
+      newJob.worker_id = null;
+    }
+
+    console.log(newJob);
+
+    const response = await fetch("http://localhost:8000/api/job/update", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({
+        job_id: newJob._id,
+        status: action,
+        price_per_hour: newJob.price_per_hour,
+        hours: newJob.hours,
+        worker_id: newJob.worker_id,
+      }),
+    });
+
+    if (response.ok) {
+      const updatedJobs = jobs.map((job) =>
+        job._id === newJob._id ? newJob : job
+      );
+
+      setJobs(updatedJobs);
+      handleOfferModalClose();
+      alert(`Jobs is now ${action}!`);
+    } else {
+      // Handle error
+      const errorData = await response.json();
+      throw new Error(errorData.message);
+    }
+  };
+
+  const handleMarkCompletedClick = async (job) => {
+    console.log("Completed: ", job);
+  };
+
+  const handleSetRating = (val) => {
+    console.log("Setting rating, ", val);
+    if (val > 5 || val < 0) {
+      return;
+    }
+
+    setRating(val);
+  };
+
+  const renderAction = (job) => {
+    if (job.status.toLowerCase() === "completed") {
+      return (
+        <button
+          onClick={() => handleReviewClick(job)}
+          className="text-blue-500 hover:underline focus:outline-none"
+        >
+          Add Review
+        </button>
+      );
+    } else if (job.status.toLowerCase() === "negotiating") {
+      return (
+        <>
+          <button
+            onClick={() => handleViewOfferClick(job)}
+            className="text-blue-500 hover:underline focus:outline-none"
+          >
+            View Offer
+          </button>
+        </>
+      );
+    } else if (job.status.toLowerCase() === "pending") {
+      return (
+        <>
+          <button
+            onClick={() => handleMarkCompletedClick(job)}
+            className="text-blue-500 hover:underline focus:outline-none"
+          >
+            Mark Completed
+          </button>
+        </>
+      );
+    } else {
+      return <></>;
+    }
+  };
+
   const renderTable = () => (
     <table className="min-w-full mt-6 mb-4 bg-white rounded-md shadow-md">
       <thead className="text-justify">
@@ -151,16 +252,7 @@ const JobPostings = () => {
               />
               {job.status}
             </td>
-            <td className="px-4 py-2 text-sm">
-              {job.status.toLowerCase() === "completed" && (
-                <button
-                  onClick={() => handleReviewClick(job)}
-                  className="text-blue-500 hover:underline focus:outline-none"
-                >
-                  Add Review
-                </button>
-              )}
-            </td>
+            <td className="px-4 py-2 text-sm">{renderAction(job)}</td>
           </tr>
         ))}
       </tbody>
@@ -235,7 +327,7 @@ const JobPostings = () => {
                 min="1"
                 max="5"
                 value={rating}
-                onChange={(e) => setRating(Number(e.target.value))}
+                onChange={(e) => handleSetRating(Number(e.target.value))}
               />
             </label>
             <label className="block mb-4">
@@ -256,6 +348,52 @@ const JobPostings = () => {
               </button>
               <button
                 onClick={handleModalClose}
+                className="px-4 py-2 ml-2 text-gray-700 bg-gray-300 rounded-md hover:bg-gray-400 focus:outline-none"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showOfferModal && (
+        <div className="fixed top-0 left-0 flex items-center justify-center w-full h-full bg-gray-800 bg-opacity-75">
+          <div className="p-6 bg-white rounded-lg shadow-lg">
+            <h2 className="mb-4 text-lg font-semibold">Final Job Offer</h2>
+            <label className="block mb-2">
+              Price Per Hour:
+              <p className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                {selectedJob.price_per_hour}
+              </p>
+            </label>
+            <label className="block mb-4">
+              Hours Required:
+              <p className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                {selectedJob.hours}
+              </p>
+            </label>
+            <label className="block mb-4">
+              Total Price:
+              <p className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                {selectedJob.hours * selectedJob.price_per_hour}
+              </p>
+            </label>
+            <div className="flex justify-end">
+              <button
+                onClick={() => handleOfferUpdate("pending")}
+                className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none"
+              >
+                Accept
+              </button>
+              <button
+                onClick={() => handleOfferUpdate("unassigned")}
+                className="px-4 py-2 ml-2 text-white bg-red-500 rounded-md hover:bg-red-600 focus:outline-none"
+              >
+                Reject
+              </button>
+              <button
+                onClick={handleOfferModalClose}
                 className="px-4 py-2 ml-2 text-gray-700 bg-gray-300 rounded-md hover:bg-gray-400 focus:outline-none"
               >
                 Cancel
