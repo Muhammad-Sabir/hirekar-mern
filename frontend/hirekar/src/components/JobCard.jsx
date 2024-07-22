@@ -174,7 +174,7 @@ function JobCard({ job, handleFilteredJobs }) {
       {showOfferModal && (
         <div className="fixed top-0 left-0 flex items-center justify-center w-full h-full bg-gray-800 bg-opacity-75">
           <div className="p-6 bg-white rounded-lg shadow-lg">
-            <h2 className="mb-4 text-lg font-semibold">Add Review</h2>
+            <h2 className="mb-4 text-lg font-semibold">Negotiate</h2>
             <label className="block mb-2">
               Rate Per Hour:
               <input

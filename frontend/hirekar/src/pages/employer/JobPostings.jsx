@@ -76,6 +76,7 @@ const JobPostings = () => {
   const handleReviewClick = (job) => {
     setSelectedJob(job);
     setShowModal(true);
+    console.log("JOB: ", job);
   };
 
   const handleModalClose = () => {
@@ -86,6 +87,7 @@ const JobPostings = () => {
   };
 
   const handleReviewSubmit = async () => {
+    console.log(selectedJob);
     try {
       const response = await fetch("http://localhost:8000/api/review/add", {
         method: "POST",
@@ -94,7 +96,7 @@ const JobPostings = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
-          worker_id: selectedJob.worker_id,
+          worker_id: selectedJob.worker_id._id,
           job_id: selectedJob._id,
           rating,
           review: reviewText,
@@ -161,13 +163,13 @@ const JobPostings = () => {
   };
 
   const handleCompletedClick = (job) => {
-    job.status = "completed";
+    job.status = "almost-completed";
 
     setSelectedJob(job);
   };
 
   useEffect(() => {
-    if (selectedJob && selectedJob.status === "completed") {
+    if (selectedJob && selectedJob.status === "almost-completed") {
       handleOfferUpdate("completed");
     }
   }, [selectedJob]);
