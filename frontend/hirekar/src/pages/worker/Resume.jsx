@@ -1,5 +1,10 @@
 import { useState } from "react";
 
+const validateAddress = (address) => {
+  const addressRegex = /, [a-zA-Z\s]+, [a-zA-Z\s]+$/;
+  return addressRegex.test(address);
+};
+
 const Resume = () => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -18,6 +23,8 @@ const Resume = () => {
     skill: "",
   });
 
+  const [error, setError] = useState("");
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -28,6 +35,17 @@ const Resume = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const { address } = formData;
+
+    if (!validateAddress(address)) {
+      setError(
+        "Please specify the city and country in Address 1 (e.g., House No 82, Block B, Model Town, Lahore, Pakistan)."
+      );
+      return;
+    }
+
+    setError(""); // Clear any previous errors
     console.log(formData);
   };
 
@@ -35,8 +53,7 @@ const Resume = () => {
     <div className="w-full p-4 pt-4 pb-12 pl-8 pr-8">
       <h2 className="mb-2 text-lg font-semibold">Your Resume:</h2>
       <p className="mb-4 text-sm">
-        Lets get to know you, please fill out some basic information about
-        yourself.
+        Please fill out some basic information about yourself.
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -129,7 +146,7 @@ const Resume = () => {
         </div>
 
         <div>
-          <h3 className="mt-5 mb-3 font-semibold ">
+          <h3 className="mt-5 mb-3 font-semibold">
             Enter Your Work Experience
           </h3>
           <div className="grid grid-cols-2 gap-4">
@@ -196,6 +213,8 @@ const Resume = () => {
             </div>
           </div>
         </div>
+
+        {error && <p className="mt-4 text-red-600">{error}</p>}
 
         <div className="flex justify-end mt-6">
           <button

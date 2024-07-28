@@ -201,7 +201,7 @@ const Signup = () => {
                   name="designation"
                   value={formData.designation}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 focus:outline-none text-gray-400 p-2 rounded-lg"
+                  className="w-full p-2 px-4 py-2 text-gray-400 rounded-lg focus:outline-none"
                 >
                   <option value="">Select Designation</option>
                   <option value="Driver">Driver</option>
