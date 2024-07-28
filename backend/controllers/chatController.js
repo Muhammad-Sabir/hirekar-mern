@@ -6,10 +6,9 @@ export const getAllChats = async (req, res) => {
   try {
     const userId = req.user._id;
 
-    const chats = await Chat.find({ users: userId }).populate(
-      "users",
-      "name email role "
-    ).populate("latest_message_id");
+    const chats = await Chat.find({ users: userId })
+      .populate("users", "name email role ")
+      .populate("latest_message_id");
 
     res.status(200).json(chats);
   } catch (error) {
@@ -67,6 +66,19 @@ export const sendMessage = async (req, res) => {
       res.status(400).json({ message: "Content or chatId not provided." });
     }
 
+    const chat = await Chat.findById(chat_id);
+
+    if (
+      chat.blocked_by &&
+      chat.blocked_by.toString() !== req.user._id.toString()
+    ) {
+      return res
+        .status(403)
+        .json({
+          message: "You are blocked from sending messages in this chat.",
+        });
+    }
+
     const newMessage = {
       sender_id: req.user._id,
       content: content,
@@ -103,6 +115,56 @@ export const getAllMessages = async (req, res) => {
     );
 
     res.status(200).json(messages);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong", error });
+  }
+};
+
+export const blockUser = async (req, res) => {
+  try {
+    const { chat_id } = req.params;
+    const userId = req.user._id;
+
+    const chat = await Chat.findByIdAndUpdate(
+      chat_id,
+      { blocked_by: userId },
+      { new: true }
+    );
+
+    res.status(200).json(chat);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong", error });
+  }
+};
+
+export const unblockUser = async (req, res) => {
+  try {
+    const { chat_id } = req.params;
+
+    const chat = await Chat.findByIdAndUpdate(
+      chat_id,
+      { blocked_by: null },
+      { new: true }
+    );
+
+    res.status(200).json(chat);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong", error });
+  }
+};
+
+// Get details of a specific chat
+export const getChatDetails = async (req, res) => {
+  try {
+    const { chat_id } = req.params;
+
+    const chat = await Chat.findById(chat_id).populate("users", "name email");
+
+    if (!chat) {
+      return res.status(404).json({ message: "Chat not found" });
+    }
+
+    res.status(200).json(chat);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong", error });
   }

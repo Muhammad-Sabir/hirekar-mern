@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
-
 import io from "socket.io-client";
 
 const ENDPOINT = "http://localhost:8000";
@@ -13,6 +12,9 @@ const ChatBox = () => {
   const [newMessage, setNewMessage] = useState("");
   const [user, setUser] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
+  const [blockedBy, setBlockedBy] = useState(null);
+  const [showBlockConfirmation, setShowBlockConfirmation] = useState(false);
+  const [showUnblockConfirmation, setShowUnblockConfirmation] = useState(false);
   const { chat_id } = useParams();
   const { chat_user } = useParams();
   const token = localStorage.getItem("token");
@@ -54,7 +56,6 @@ const ChatBox = () => {
         }
 
         const data = await response.json();
-        console.log(data);
         setMessages(data);
 
         const otherUser =
@@ -72,6 +73,34 @@ const ChatBox = () => {
     fetchMessages();
 
     selectedChatCompare = selectedChat;
+  }, [chat_id, token]);
+
+  useEffect(() => {
+    const fetchChatDetails = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8000/api/chat/${chat_id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch chat details");
+        }
+
+        const chat = await response.json();
+        console.log("chat.blocked_by");
+        console.log(chat.blocked_by);
+        setBlockedBy(chat.blocked_by);
+      } catch (error) {
+        console.error("Error fetching chat details:", error);
+      }
+    };
+
+    fetchChatDetails();
   }, [chat_id, token]);
 
   const handleSubmit = async (e) => {
@@ -104,7 +133,55 @@ const ChatBox = () => {
     }
   };
 
-  console.log(messages);
+  const handleBlock = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/chat/block/${chat_id}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to block user");
+      }
+
+      const chat = await response.json();
+      setBlockedBy(chat.blocked_by);
+      console.log("chat.blocked_by2");
+      console.log(chat);
+      setShowBlockConfirmation(false);
+    } catch (error) {
+      console.error("Error blocking user:", error);
+    }
+  };
+
+  const handleUnblock = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/chat/unblock/${chat_id}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to unblock user");
+      }
+
+      const chat = await response.json();
+      setBlockedBy(chat.blocked_by);
+      setShowUnblockConfirmation(false);
+    } catch (error) {
+      console.error("Error unblocking user:", error);
+    }
+  };
 
   return (
     <>
@@ -121,54 +198,121 @@ const ChatBox = () => {
             {chat_user}
           </span>
         </div>
+        {blockedBy === null || blockedBy === undefined ? (
+          <button
+            className="px-4 py-2 text-white bg-red-600 rounded-lg"
+            onClick={() => setShowBlockConfirmation(true)}
+          >
+            Block
+          </button>
+        ) : blockedBy === userData._id ? (
+          <button
+            className="px-4 py-2 text-white bg-green-600 rounded-lg"
+            onClick={() => setShowUnblockConfirmation(true)}
+          >
+            Unblock
+          </button>
+        ) : (
+          <button
+            className="px-4 py-2 text-white bg-gray-600 rounded-lg"
+            disabled
+          >
+            Blocked
+          </button>
+        )}
       </div>
-
-      <div className="flex flex-col h-[80vh] bg-gray-100 p-4 pt-4 pb-0 pl-8 pr-8">
-        <div className="flex-1 overflow-y-auto">
-          {messages.map((msg) => (
+      <div className="relative flex flex-col justify-between flex-1 h-full p-4 overflow-y-auto bg-gray-100">
+        {messages.map((message) => (
+          <div
+            key={message._id}
+            className={`flex items-center mb-4 ${
+              message.sender_id._id === userData._id
+                ? "justify-end"
+                : "justify-start"
+            }`}
+          >
             <div
-              key={msg._id}
-              className={`flex ${
-                msg.sender_id.name === chat_user
-                  ? "justify-start"
-                  : "justify-end"
-              } mb-4`}
+              className={`p-4 rounded-lg ${
+                message.sender_id._id === userData._id
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-300 text-gray-800"
+              }`}
             >
-              <div
-                className={`max-w-xs mx-2 px-4 py-2 rounded-lg shadow-md ${
-                  msg.sender_id.name === chat_user
-                    ? "bg-blue-600 text-white self-end"
-                    : "bg-white text-gray-800"
-                }`}
-              >
-                <p>
-                  {msg.sender_id.name === chat_user ? chat_user : "You"}:{" "}
-                  {msg.content}
-                </p>
-              </div>
+              {message.content}
             </div>
-          ))}
-        </div>
-
+          </div>
+        ))}
+      </div>
+      {blockedBy === null ? (
         <form
           onSubmit={handleSubmit}
-          className="flex items-center justify-between p-4 bg-white"
+          className="flex p-4 mb-10 bg-white border-t"
         >
           <input
             type="text"
-            className="flex-1 px-4 py-2 mr-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-600"
-            placeholder="Type your message..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring focus:border-blue-300"
+            placeholder="Type a message..."
           />
           <button
             type="submit"
-            className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none"
+            className="px-4 py-2 text-white bg-blue-600 rounded-r-lg"
           >
             Send
           </button>
         </form>
-      </div>
+      ) : (
+        <div className="p-4 text-center text-red-500">
+          You cannot send messages in this chat.
+        </div>
+      )}
+      {showBlockConfirmation && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="p-6 bg-white rounded-lg shadow-lg">
+            <h2 className="mb-4 text-lg font-semibold">
+              Are you sure you want to block this user?
+            </h2>
+            <div className="flex justify-end">
+              <button
+                className="px-4 py-2 mr-2 text-white bg-red-600 rounded-lg"
+                onClick={handleBlock}
+              >
+                Block
+              </button>
+              <button
+                className="px-4 py-2 text-gray-800 bg-gray-300 rounded-lg"
+                onClick={() => setShowBlockConfirmation(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showUnblockConfirmation && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="p-6 bg-white rounded-lg shadow-lg">
+            <h2 className="mb-4 text-lg font-semibold">
+              Are you sure you want to unblock this user?
+            </h2>
+            <div className="flex justify-end">
+              <button
+                className="px-4 py-2 mr-2 text-white bg-green-600 rounded-lg"
+                onClick={handleUnblock}
+              >
+                Unblock
+              </button>
+              <button
+                className="px-4 py-2 text-gray-800 bg-gray-300 rounded-lg"
+                onClick={() => setShowUnblockConfirmation(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
