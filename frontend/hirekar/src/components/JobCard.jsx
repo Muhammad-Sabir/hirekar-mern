@@ -2,16 +2,26 @@
 
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import gardener from "/assets/gardener.jpg";
+import plumber from "/assets/plumber.jpg";
+import driver from "/assets/driver.jpg";
+import electrician from "/assets/electrician.jpg";
 
 function JobCard({ job, handleFilteredJobs }) {
   const currentUser = JSON.parse(localStorage.getItem("user"));
-
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [showOfferModal, setShowOfferModal] = useState("");
+  const [showOfferModal, setShowOfferModal] = useState(false);
   const [rate, setRate] = useState("");
   const [hours, setHours] = useState("");
   const [worker, setWorker] = useState(null);
+
+  let picture;
+
+  if (job.title.toLowerCase() === "gardener") picture = gardener;
+  else if (job.title.toLowerCase() === "plumber") picture = plumber;
+  else if (job.title.toLowerCase() === "driver") picture = driver;
+  else if (job.title.toLowerCase() === "electrician") picture = electrician;
 
   useEffect(() => {
     const fetchAllWorkers = async () => {
@@ -44,7 +54,7 @@ function JobCard({ job, handleFilteredJobs }) {
     };
 
     findWorker();
-  }, []);
+  }, [currentUser._id]);
 
   const handleChatClick = async () => {
     setLoading(true);
@@ -136,39 +146,48 @@ function JobCard({ job, handleFilteredJobs }) {
   };
 
   return (
-    <div className="flex flex-col justify-center h-auto gap-4 p-2 m-4 overflow-hidden bg-white rounded shadow-xl w-60">
-      <div>
-        <p className="text-sm text-gray-700">
-          <strong>Title:</strong> {job.title}
-        </p>
-        <p className="text-sm text-gray-700">
-          <strong>Description:</strong> {job.description}
-        </p>
-        <p className="text-sm text-gray-700">
-          <strong>Hourly Rate:</strong> Rs: {job.price_per_hour}
-        </p>
-        <p className="text-sm text-gray-700">
-          <strong>Hours Required:</strong> {job.hours}
-        </p>
-        <p className="text-sm text-gray-700">
-          <strong>Posted By:</strong> {job.employer_id.name}
-        </p>
+    <div className="flex flex-col justify-between w-64 p-4 m-4 overflow-hidden rounded-lg shadow-lg bg-slate-200">
+      <div className="flex justify-center">
+        <img
+          src={picture}
+          alt="image"
+          className="object-cover w-full h-40 rounded"
+        />
       </div>
+      <div className="flex flex-col justify-between h-full">
+        <div>
+          <p className="mb-1 text-sm text-gray-700">
+            <strong>Title:</strong> {job.title}
+          </p>
+          <p className="mb-1 text-sm text-gray-700">
+            <strong>Description:</strong> {job.description}
+          </p>
+          <p className="mb-1 text-sm text-gray-700">
+            <strong>Hourly Rate:</strong> Rs: {job.price_per_hour}
+          </p>
+          <p className="mb-1 text-sm text-gray-700">
+            <strong>Hours Required:</strong> {job.hours}
+          </p>
+          <p className="mb-1 text-sm text-gray-700">
+            <strong>Posted By:</strong> {job.employer_id.name}
+          </p>
+        </div>
 
-      <div>
-        <button
-          onClick={() => setShowOfferModal(true)}
-          className="block w-full px-4 py-2 mb-2 font-bold text-center text-white bg-blue-500 rounded hover:bg-blue-700"
-        >
-          Negotiate
-        </button>
-        <button
-          onClick={handleChatClick}
-          className="block w-full px-4 py-2 font-bold text-center text-white bg-green-500 rounded hover:bg-green-700"
-          disabled={loading}
-        >
-          {loading ? "Loading..." : "Chat"}
-        </button>
+        <div className="mt-2">
+          <button
+            onClick={() => setShowOfferModal(true)}
+            className="block w-full px-4 py-2 mb-2 font-bold text-center text-white bg-blue-500 rounded hover:bg-blue-700"
+          >
+            Negotiate
+          </button>
+          <button
+            onClick={handleChatClick}
+            className="block w-full px-4 py-2 font-bold text-center text-white bg-green-500 rounded hover:bg-green-700"
+            disabled={loading}
+          >
+            {loading ? "Loading..." : "Chat"}
+          </button>
+        </div>
       </div>
 
       {showOfferModal && (

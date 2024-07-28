@@ -42,7 +42,7 @@ function Jobs() {
   return (
     <div className="w-full p-4 pt-4 pb-8 pl-8 pr-8">
       <h2 className="mt-8 mb-2 text-lg font-semibold">All Jobs:</h2>
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap">
         {filteredJobs.map((job) => (
           <JobCard
             key={job._id}

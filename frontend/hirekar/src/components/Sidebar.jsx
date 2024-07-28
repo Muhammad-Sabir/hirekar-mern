@@ -31,7 +31,12 @@ const Sidebar = ({ isOpen }) => {
   if (hasWorkerPath) {
     sidebarItems = [
       { key: "jobs", icon: <GrUserWorker />, name: "Jobs", url: "/worker/" },
-      { key: "jobsHistory", icon: <IoDocuments />, name: "Your Jobs", url: "/worker/history" },
+      {
+        key: "jobsHistory",
+        icon: <IoDocuments />,
+        name: "Your Jobs",
+        url: "/worker/history",
+      },
       {
         key: "recommendations",
         icon: <IoMdTrendingUp />,
@@ -93,7 +98,7 @@ const Sidebar = ({ isOpen }) => {
 
   return (
     <div
-      className={`fixed left-0 top-12 bottom-0 w-64 bg-white h-[calc(100%-3rem)] p-4 pt-4 pb-12 pl-4 pr-4 transition-transform transform ${
+      className={`fixed left-0 bg-slate-100 top-12 bottom-0 w-64 h-[calc(100%-3rem)] p-4 pt-4 pb-12 pl-4 pr-4 transition-transform transform ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       }`}
       style={{ borderRight: "1px solid #ccc" }}

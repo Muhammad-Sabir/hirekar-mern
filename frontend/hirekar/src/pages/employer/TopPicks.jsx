@@ -1,4 +1,3 @@
-import React from 'react'
 import Recommendations from '../../components/RecommendedWorkers'
 import NearbyWorkers from '../../components/NearbyWorkers'
 

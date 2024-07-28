@@ -29,7 +29,7 @@ function Recommendations() {
     <div className="w-full p-4 pt-4 pb-8 pl-8 pr-8">
       <h2 className="mb-2 text-lg font-semibold">Recommended Workers:</h2>
 
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap">
         {workers.map((worker) => (
           <WorkerCard
             key={worker.user._id}

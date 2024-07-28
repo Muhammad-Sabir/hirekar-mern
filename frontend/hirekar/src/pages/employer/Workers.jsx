@@ -95,7 +95,7 @@ function Workers() {
       />
 
       <h2 className="mt-8 mb-2 text-lg font-semibold">All Workers:</h2>
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap">
         {filteredWorkers.map((worker) => (
           <WorkerCard
             key={worker._id}
