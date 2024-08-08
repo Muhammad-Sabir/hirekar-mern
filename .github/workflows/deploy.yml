@@ -19,9 +19,11 @@ jobs:
           node-version: "16"
 
       - name: Install Dependencies
+        working-directory: frontend/hirekar
         run: npm install
 
       - name: Build Project
+        working-directory: frontend/hirekar
         run: npm run build
 
       - name: Deploy to S3
@@ -31,4 +33,4 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
         run: |
-          aws s3 sync build/ s3://$S3_BUCKET_NAME --delete
+          aws s3 sync frontend/hirekar/dist/ s3://$S3_BUCKET_NAME --delete
