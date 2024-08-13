@@ -18,16 +18,13 @@ const Chatbot = () => {
     if (input.trim()) {
       setMessages([...messages, { text: input, sender: "user" }]);
       try {
-        const response = await fetch(
-          "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/chatbot",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ question: input }),
-          }
-        );
+        const response = await fetch("http://16.171.195.37/api/chatbot", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ question: input }),
+        });
         const data = await response.json();
         setMessages([
           ...messages,

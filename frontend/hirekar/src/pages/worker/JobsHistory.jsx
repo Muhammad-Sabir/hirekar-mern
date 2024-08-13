@@ -30,14 +30,11 @@ const Jobs = () => {
     const fetchJobs = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(
-          "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/job/history",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch("http://16.171.195.37/api/job/history", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (response.ok) {
           const data = await response.json();
           setJobs(data);
@@ -95,17 +92,14 @@ const Jobs = () => {
   const updateJobStatus = async (jobData) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(
-        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/job/update",
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(jobData),
-        }
-      );
+      const response = await fetch("http://16.171.195.37/api/job/update", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(jobData),
+      });
       if (response.ok) {
         alert(`Job status is updated as: ${jobData.status}`);
       } else {
@@ -121,14 +115,11 @@ const Jobs = () => {
   const refreshJobs = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(
-        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/job/history",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch("http://16.171.195.37/api/job/history", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         setJobs(data);

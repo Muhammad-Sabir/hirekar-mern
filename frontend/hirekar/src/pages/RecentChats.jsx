@@ -12,14 +12,11 @@ const RecentChats = () => {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const response = await fetch(
-          "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/chat/chats/",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch("http://16.171.195.37/api/chat/chats/", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (!response.ok) {
           throw new Error("Failed to fetch chats");

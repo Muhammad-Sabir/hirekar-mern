@@ -16,14 +16,11 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token"); // Assume the token is stored in localStorage
-        const response = await fetch(
-          "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/user/profile/",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch("http://16.171.195.37/api/user/profile/", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const data = await response.json();
         setFormData({
           name: data.user.name,
@@ -54,17 +51,14 @@ const Profile = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(
-        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/user/profile/",
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch("http://16.171.195.37/api/user/profile/", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
       const data = await response.json();
       console.log("Profile updated:", data);
       alert("Profile Updated Successfully");

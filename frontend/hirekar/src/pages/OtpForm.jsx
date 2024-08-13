@@ -37,18 +37,15 @@ const OtpForm = () => {
     }
 
     try {
-      const response = await fetch(
-        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/auth/send-otp",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-          }),
-        }
-      );
+      const response = await fetch("http://16.171.195.37/api/auth/send-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+        }),
+      });
       const data = await response.json();
       if (response.ok) {
         setOtpSent(true);
@@ -77,19 +74,16 @@ const OtpForm = () => {
     }
 
     try {
-      const response = await fetch(
-        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/auth/verify-otp",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            otp,
-          }),
-        }
-      );
+      const response = await fetch("http://16.171.195.37/api/auth/verify-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          otp,
+        }),
+      });
       const data = await response.json();
       if (response.ok) {
         setError("");
@@ -107,18 +101,15 @@ const OtpForm = () => {
     const { email } = formData;
 
     try {
-      const response = await fetch(
-        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/auth/send-otp",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-          }),
-        }
-      );
+      const response = await fetch("http://16.171.195.37/api/auth/send-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+        }),
+      });
       const data = await response.json();
       if (response.ok) {
         setOtpSent(true);

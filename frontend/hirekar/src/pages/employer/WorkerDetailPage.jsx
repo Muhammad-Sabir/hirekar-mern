@@ -9,7 +9,7 @@ const WorkerDetailsPage = () => {
     const fetchWorkerDetails = async () => {
       try {
         const response = await fetch(
-          `http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/worker/${worker_id}`,
+          `http://16.171.195.37/api/worker/${worker_id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

@@ -109,20 +109,17 @@ const Signup = () => {
     //console.log(formData);
 
     try {
-      const response = await fetch(
-        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/auth/signup",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...formData,
-            role: userType,
-            skills: skills.split(",").map((skill) => skill.trim()),
-          }),
-        }
-      );
+      const response = await fetch("http://16.171.195.37/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          role: userType,
+          skills: skills.split(",").map((skill) => skill.trim()),
+        }),
+      });
       const data = await response.json();
       if (response.ok) {
         navigate(`/login/${userType}`);

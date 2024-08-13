@@ -8,14 +8,11 @@ function NearbyWorkers() {
   useEffect(() => {
     const fetchNearbyWorkers = async () => {
       try {
-        const response = await fetch(
-          "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/worker/nearby",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await fetch("http://16.171.195.37/api/worker/nearby", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         const data = await response.json();
         setWorkers(data.workers);
       } catch (error) {

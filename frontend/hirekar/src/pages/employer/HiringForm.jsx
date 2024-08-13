@@ -9,14 +9,11 @@ const HiringForm = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await fetch(
-          "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/job/all",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await fetch("http://16.171.195.37/api/job/all", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         const data = await response.json();
         const unassignedJobs = data.filter(
           (job) => job.status === "unassigned"
@@ -43,17 +40,14 @@ const HiringForm = () => {
     };
 
     try {
-      const response = await fetch(
-        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/job/assign",
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch("http://16.171.195.37/api/job/assign", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(formData),
+      });
       const result = await response.json();
       console.log("Job assigned:", result);
       alert(`Request to ${user} has been sent to accept the job offer`);

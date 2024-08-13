@@ -9,7 +9,7 @@ function Recommendations() {
     const fetchWorkers = async () => {
       try {
         const response = await fetch(
-          "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/worker/recommended",
+          "http://16.171.195.37/api/worker/recommended",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
