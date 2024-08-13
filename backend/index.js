@@ -33,7 +33,7 @@ app.use("/api/review", reviewRoutes);
 app.use("/api/worker", workerRoutes);
 app.use("/api/user", userRoutes);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 80;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 // const io = new Server(server, {
