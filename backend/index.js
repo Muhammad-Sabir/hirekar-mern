@@ -33,45 +33,45 @@ app.use("/api/review", reviewRoutes);
 app.use("/api/worker", workerRoutes);
 app.use("/api/user", userRoutes);
 
-const PORT = process.env.PORT || 8000;
+// const PORT = process.env.PORT || 8000;
 
-const server = app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+// const server = app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
-const io = new Server(server, {
-  pingTimeout: 60000,
-  cors: {
-    origin: "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com",
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
-  },
-});
+// const io = new Server(server, {
+//   pingTimeout: 60000,
+//   cors: {
+//     origin: "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com",
+//     methods: ["GET", "POST"],
+//     allowedHeaders: ["Content-Type"],
+//   },
+// });
 
-io.on("connection", (socket) => {
-  console.log("Connected to socket.io");
+// io.on("connection", (socket) => {
+//   console.log("Connected to socket.io");
 
-  socket.on("setup", (userData) => {
-    socket.join(userData._id);
-    console.log("User Id Setup: ", userData._id);
-    socket.emit("Connected!");
-  });
+//   socket.on("setup", (userData) => {
+//     socket.join(userData._id);
+//     console.log("User Id Setup: ", userData._id);
+//     socket.emit("Connected!");
+//   });
 
-  socket.on("join chat", (room) => {
-    socket.join(room);
-    console.log("Joined room: ", room);
-  });
+//   socket.on("join chat", (room) => {
+//     socket.join(room);
+//     console.log("Joined room: ", room);
+//   });
 
-  socket.on("new message", (newMessageReceived) => {
-    let chat = newMessageReceived.chat_id;
+//   socket.on("new message", (newMessageReceived) => {
+//     let chat = newMessageReceived.chat_id;
 
-    if (!chat.users) {
-      console.error("Invalid chat ID");
-      return;
-    }
+//     if (!chat.users) {
+//       console.error("Invalid chat ID");
+//       return;
+//     }
 
-    chat.users.forEach((user) => {
-      if (user._id === newMessageReceived.sender_id._id) return;
+//     chat.users.forEach((user) => {
+//       if (user._id === newMessageReceived.sender_id._id) return;
 
-      socket.in(user._id).emit("message received", newMessageReceived);
-    });
-  });
-});
+//       socket.in(user._id).emit("message received", newMessageReceived);
+//     });
+//   });
+// });
