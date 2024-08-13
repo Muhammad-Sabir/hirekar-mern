@@ -7,9 +7,8 @@ import { Server } from "socket.io";
 
 dotenv.config();
 
-app.options("*", cors());
 const app = express();
-app.use();
+app.use(cors());
 app.use(bodyParser.json());
 
 const USERNAME = process.env.DB_USERNAME;
