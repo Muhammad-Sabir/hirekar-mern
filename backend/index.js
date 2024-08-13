@@ -8,7 +8,13 @@ import { Server } from "socket.io";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(bodyParser.json());
 
 const USERNAME = process.env.DB_USERNAME;
@@ -38,7 +44,11 @@ const server = app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 const io = new Server(server, {
   pingTimeout: 60000,
-  cors: { origin: "*" },
+  cors: {
+    origin: "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+  },
 });
 
 io.on("connection", (socket) => {
