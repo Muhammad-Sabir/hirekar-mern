@@ -30,14 +30,17 @@ const JobPostingForm = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:8000/api/job/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(jobData),
-      });
+      const response = await fetch(
+        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/job/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(jobData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Network response was not ok");

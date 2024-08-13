@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import backgroundImage from '/assets/home-bg.jpg';
+import backgroundImage from "/assets/home-bg.jpg";
 
 const OtpForm = () => {
-
   const navigate = useNavigate();
   const { userType } = useParams();
 
   const [formData, setFormData] = useState({
-    email: '',
-    otp: '',
+    email: "",
+    otp: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [otpSent, setOtpSent] = useState(false);
 
   const validEmail = (email) => {
@@ -33,29 +32,32 @@ const OtpForm = () => {
     const { email } = formData;
 
     if (!validEmail(email)) {
-      setError('Please enter a valid email address.');
+      setError("Please enter a valid email address.");
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/auth/send-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-        }),
-      });
+      const response = await fetch(
+        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/auth/send-otp",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+          }),
+        }
+      );
       const data = await response.json();
       if (response.ok) {
         setOtpSent(true);
-        setError('');
+        setError("");
       } else {
-        setError(data.message || 'Failed to send OTP. Please try again.');
+        setError(data.message || "Failed to send OTP. Please try again.");
       }
     } catch (error) {
-      setError('An error occurred. Please try again.');
+      setError("An error occurred. Please try again.");
     }
   };
 
@@ -65,36 +67,39 @@ const OtpForm = () => {
     const { email, otp } = formData;
 
     if (!validEmail(email)) {
-      setError('Please enter a valid email address.');
+      setError("Please enter a valid email address.");
       return;
     }
 
     if (!otp) {
-      setError('Please enter the OTP sent to your email.');
+      setError("Please enter the OTP sent to your email.");
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/auth/verify-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          otp,
-        }),
-      });
+      const response = await fetch(
+        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/auth/verify-otp",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            otp,
+          }),
+        }
+      );
       const data = await response.json();
       if (response.ok) {
-        setError('');
+        setError("");
         //console.log("USER is Verified")
-        navigate(`/login/${userType}`)
+        navigate(`/login/${userType}`);
       } else {
-        setError(data.message || 'Failed to verify OTP. Please try again.');
+        setError(data.message || "Failed to verify OTP. Please try again.");
       }
     } catch (error) {
-      setError('An error occurred. Please try again.');
+      setError("An error occurred. Please try again.");
     }
   };
 
@@ -102,24 +107,27 @@ const OtpForm = () => {
     const { email } = formData;
 
     try {
-      const response = await fetch('http://localhost:8000/api/auth/send-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-        }),
-      });
+      const response = await fetch(
+        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/auth/send-otp",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+          }),
+        }
+      );
       const data = await response.json();
       if (response.ok) {
         setOtpSent(true);
-        setError('OTP resent to your email.');
+        setError("OTP resent to your email.");
       } else {
-        setError(data.message || 'Failed to resend OTP. Please try again.');
+        setError(data.message || "Failed to resend OTP. Please try again.");
       }
     } catch (error) {
-      setError('An error occurred. Please try again.');
+      setError("An error occurred. Please try again.");
     }
   };
 
@@ -129,7 +137,9 @@ const OtpForm = () => {
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <div className="max-w-md p-8 text-center bg-white bg-opacity-75 rounded-lg shadow-lg w-96">
-        <h1 className="mb-4 text-3xl font-bold text-custom-red">Verify Email</h1>
+        <h1 className="mb-4 text-3xl font-bold text-custom-red">
+          Verify Email
+        </h1>
         {!otpSent && (
           <div>
             <p className="text-gray-600">Enter your email to receive OTP:</p>

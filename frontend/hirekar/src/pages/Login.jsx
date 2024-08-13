@@ -21,13 +21,16 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:8000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       const data = await response.json();
 
@@ -42,7 +45,7 @@ const Login = () => {
           setError("Select the correct role!");
         } else {
           if (!data.user.isVerified) {
-              navigate(`/verifyOtp/${userType}`);
+            navigate(`/verifyOtp/${userType}`);
           } else {
             navigate(`/${data.user.role}/`);
           }
@@ -114,7 +117,10 @@ const Login = () => {
           {error && error === "User not verified" && (
             <p className="m-4 text-red-600">
               User not verified.{" "}
-              <Link to={`/verifyOtp/${userType}`} className="text-blue-600 underline">
+              <Link
+                to={`/verifyOtp/${userType}`}
+                className="text-blue-600 underline"
+              >
                 Verify Now
               </Link>
             </p>

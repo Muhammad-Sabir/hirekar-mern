@@ -12,11 +12,14 @@ const RecentChats = () => {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/chat/chats/", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/chat/chats/",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to fetch chats");
@@ -73,7 +76,9 @@ const RecentChats = () => {
                   <span className="text-sm text-gray-500">{formattedDate}</span>
                 </div>
                 <p className="text-sm text-gray-800">
-                  {chat.latest_message_id ? chat.latest_message_id.content : "No recent message"}
+                  {chat.latest_message_id
+                    ? chat.latest_message_id.content
+                    : "No recent message"}
                 </p>
               </div>
             </Link>

@@ -26,7 +26,7 @@ const WorkerProfile = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          "http://localhost:8000/api/user/profile/",
+          "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/user/profile/",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -74,17 +74,20 @@ const WorkerProfile = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8000/api/user/profile/", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          ...formData,
-          skills: formData.skills.split(",").map((skill) => skill.trim()),
-        }),
-      });
+      const response = await fetch(
+        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/user/profile/",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            ...formData,
+            skills: formData.skills.split(",").map((skill) => skill.trim()),
+          }),
+        }
+      );
       const data = await response.json();
       console.log("Profile updated:", data);
       setError("");

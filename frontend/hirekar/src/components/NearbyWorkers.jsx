@@ -9,7 +9,7 @@ function NearbyWorkers() {
     const fetchNearbyWorkers = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/api/worker/nearby",
+          "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/worker/nearby",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

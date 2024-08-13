@@ -25,13 +25,16 @@ function JobCard({ job, handleFilteredJobs }) {
 
   useEffect(() => {
     const fetchAllWorkers = async () => {
-      const response = await fetch("http://localhost:8000/api/worker/all", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await fetch(
+        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/worker/all",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -60,7 +63,7 @@ function JobCard({ job, handleFilteredJobs }) {
     setLoading(true);
     try {
       const response = await fetch(
-        "http://localhost:8000/api/chat/access-chat/",
+        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/chat/access-chat/",
         {
           method: "POST",
           headers: {
@@ -93,17 +96,20 @@ function JobCard({ job, handleFilteredJobs }) {
 
     try {
       // First API call to assign the job
-      const response = await fetch("http://localhost:8000/api/job/assign", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-          job_id: job._id,
-          worker_id: worker._id,
-        }),
-      });
+      const response = await fetch(
+        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/job/assign",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            job_id: job._id,
+            worker_id: worker._id,
+          }),
+        }
+      );
 
       if (response.ok) {
         const newJob = {
@@ -115,19 +121,22 @@ function JobCard({ job, handleFilteredJobs }) {
         handleFilteredJobs(newJob);
 
         // Second API call to update the job status and details
-        const response2 = await fetch("http://localhost:8000/api/job/update", {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({
-            job_id: job._id, // Assuming job_id is needed here as well
-            status: "negotiating",
-            price_per_hour: rate,
-            hours: hours,
-          }),
-        });
+        const response2 = await fetch(
+          "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/job/update",
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({
+              job_id: job._id, // Assuming job_id is needed here as well
+              status: "negotiating",
+              price_per_hour: rate,
+              hours: hours,
+            }),
+          }
+        );
 
         if (response2.ok) {
           setShowOfferModal(false);

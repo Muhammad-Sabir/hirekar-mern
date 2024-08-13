@@ -16,11 +16,14 @@ function Workers() {
   useEffect(() => {
     const fetchWorkers = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/worker/all", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await fetch(
+          "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/worker/all",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         const data = await response.json();
         setWorkers(data);
         console.log("Workers fetched: ", data);

@@ -43,11 +43,14 @@ const JobPostings = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/job/history/", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await fetch(
+          "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/job/history/",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         const data = await response.json();
         setJobs(data);
       } catch (error) {
@@ -89,19 +92,22 @@ const JobPostings = () => {
   const handleReviewSubmit = async () => {
     console.log(selectedJob);
     try {
-      const response = await fetch("http://localhost:8000/api/review/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-          worker_id: selectedJob.worker_id._id,
-          job_id: selectedJob._id,
-          rating,
-          review: reviewText,
-        }),
-      });
+      const response = await fetch(
+        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/review/add",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            worker_id: selectedJob.worker_id._id,
+            job_id: selectedJob._id,
+            rating,
+            review: reviewText,
+          }),
+        }
+      );
       if (response.ok) {
         // Handle success, e.g., close modal, refresh data, etc.
         handleModalClose();
@@ -133,19 +139,22 @@ const JobPostings = () => {
 
     console.log(selectedJob);
 
-    const response = await fetch("http://localhost:8000/api/job/update", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({
-        job_id: newJob._id,
-        status: action,
-        price_per_hour: newJob.price_per_hour,
-        hours: newJob.hours,
-      }),
-    });
+    const response = await fetch(
+      "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/job/update",
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          job_id: newJob._id,
+          status: action,
+          price_per_hour: newJob.price_per_hour,
+          hours: newJob.hours,
+        }),
+      }
+    );
 
     if (response.ok) {
       const updatedJobs = jobs.map((job) =>

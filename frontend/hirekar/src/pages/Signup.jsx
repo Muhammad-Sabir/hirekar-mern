@@ -37,7 +37,7 @@ const Signup = () => {
   };
 
   const validateAddress = (address) => {
-    const addressRegex = /, [a-zA-Z\s]+, [a-zA-Z\s]+$/
+    const addressRegex = /, [a-zA-Z\s]+, [a-zA-Z\s]+$/;
     return addressRegex.test(address);
   };
 
@@ -52,7 +52,16 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { name, email, password, address, phone_number, designation, hourly_rate, skills } = formData;
+    const {
+      name,
+      email,
+      password,
+      address,
+      phone_number,
+      designation,
+      hourly_rate,
+      skills,
+    } = formData;
 
     if (!validName(name)) {
       setError("Name must include both first and last name");
@@ -70,7 +79,9 @@ const Signup = () => {
     }
 
     if (!validateAddress(address)) {
-      setError("Please specify the city and country in the address \n (e.g., House No 82, Block B, Model Town, Lahore, Pakistan).");
+      setError(
+        "Please specify the city and country in the address \n (e.g., House No 82, Block B, Model Town, Lahore, Pakistan)."
+      );
       return;
     }
 
@@ -98,17 +109,20 @@ const Signup = () => {
     //console.log(formData);
 
     try {
-      const response = await fetch("http://localhost:8000/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          role: userType,
-          skills: skills.split(',').map(skill => skill.trim())
-        }),
-      });
+      const response = await fetch(
+        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/auth/signup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...formData,
+            role: userType,
+            skills: skills.split(",").map((skill) => skill.trim()),
+          }),
+        }
+      );
       const data = await response.json();
       if (response.ok) {
         navigate(`/login/${userType}`);
@@ -132,13 +146,17 @@ const Signup = () => {
         <div className="flex justify-center mb-6">
           <Link
             to="/signup/worker"
-            className={`px-4 w-full py-2 ${isWorker ? "text-white bg-blue-600 rounded-lg" : "text-gray-600"}`}
+            className={`px-4 w-full py-2 ${
+              isWorker ? "text-white bg-blue-600 rounded-lg" : "text-gray-600"
+            }`}
           >
             Job Seeker
           </Link>
           <Link
             to="/signup/employer"
-            className={`px-4 w-full py-2 ${!isWorker ? "text-white bg-blue-600 rounded-lg" : "text-gray-600"}`}
+            className={`px-4 w-full py-2 ${
+              !isWorker ? "text-white bg-blue-600 rounded-lg" : "text-gray-600"
+            }`}
           >
             Hire Talent
           </Link>

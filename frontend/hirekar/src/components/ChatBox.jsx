@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 import io from "socket.io-client";
 
-const ENDPOINT = "http://localhost:8000";
+const ENDPOINT = "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com";
 let selectedChatCompare;
 
 const ChatBox = () => {
@@ -43,7 +43,7 @@ const ChatBox = () => {
     const fetchMessages = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/chat/messages/${chat_id}`,
+          `http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/chat/messages/${chat_id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -79,7 +79,7 @@ const ChatBox = () => {
     const fetchChatDetails = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/chat/${chat_id}`,
+          `http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/chat/${chat_id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -107,17 +107,20 @@ const ChatBox = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8000/api/chat/message/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          content: newMessage,
-          chat_id: chat_id,
-        }),
-      });
+      const response = await fetch(
+        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/chat/message/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            content: newMessage,
+            chat_id: chat_id,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to send message");
@@ -136,7 +139,7 @@ const ChatBox = () => {
   const handleBlock = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/chat/block/${chat_id}`,
+        `http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/chat/block/${chat_id}`,
         {
           method: "POST",
           headers: {
@@ -162,7 +165,7 @@ const ChatBox = () => {
   const handleUnblock = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/chat/unblock/${chat_id}`,
+        `http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/chat/unblock/${chat_id}`,
         {
           method: "POST",
           headers: {

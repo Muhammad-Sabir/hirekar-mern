@@ -9,7 +9,7 @@ function Jobs() {
     const fetchJobs = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/api/job/recommended",
+          "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/job/recommended",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

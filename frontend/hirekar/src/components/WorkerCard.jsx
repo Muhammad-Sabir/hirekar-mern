@@ -20,7 +20,7 @@ function WorkerCard({
     setLoading(true);
     try {
       const response = await fetch(
-        "http://localhost:8000/api/chat/access-chat/",
+        "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com/api/chat/access-chat/",
         {
           method: "POST",
           headers: {
