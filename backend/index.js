@@ -7,14 +7,9 @@ import { Server } from "socket.io";
 
 dotenv.config();
 
+app.options("*", cors());
 const app = express();
-app.use(
-  cors({
-    origin: "http://hirekar-frontend.s3-website.eu-north-1.amazonaws.com",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+app.use();
 app.use(bodyParser.json());
 
 const USERNAME = process.env.DB_USERNAME;
