@@ -33,9 +33,8 @@ app.use("/api/review", reviewRoutes);
 app.use("/api/worker", workerRoutes);
 app.use("/api/user", userRoutes);
 
-// const PORT = process.env.PORT || 8000;
-
-// const server = app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 // const io = new Server(server, {
 //   pingTimeout: 60000,
