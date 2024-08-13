@@ -8,16 +8,24 @@ import {
   unblockUser,
   getChatDetails,
 } from "../controllers/chatController.js";
-import { authMiddleware } from "../middlewares/authMiddleware.js";
+import {
+  authMiddleware,
+  corsMiddleware,
+} from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/chats/", authMiddleware, getAllChats);
-router.post("/access-chat/", authMiddleware, accessChat);
-router.post("/message", authMiddleware, sendMessage);
-router.get("/messages/:chat_id", authMiddleware, getAllMessages);
-router.post("/block/:chat_id", authMiddleware, blockUser);
-router.post("/unblock/:chat_id", authMiddleware, unblockUser);
-router.get("/:chat_id", authMiddleware, getChatDetails);
+router.get("/chats/", corsMiddleware, authMiddleware, getAllChats);
+router.post("/access-chat/", corsMiddleware, authMiddleware, accessChat);
+router.post("/message", corsMiddleware, authMiddleware, sendMessage);
+router.get(
+  "/messages/:chat_id",
+  corsMiddleware,
+  authMiddleware,
+  getAllMessages
+);
+router.post("/block/:chat_id", corsMiddleware, authMiddleware, blockUser);
+router.post("/unblock/:chat_id", corsMiddleware, authMiddleware, unblockUser);
+router.get("/:chat_id", corsMiddleware, authMiddleware, getChatDetails);
 
 export default router;
