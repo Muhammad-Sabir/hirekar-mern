@@ -58,7 +58,7 @@ jobs:
           GEOCODE_API_KEY: ${{ secrets.GEOCODE_API_KEY }}
         run: |
           ssh ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
-            cd /home/ec2-user/backend
+            cd /home/ec2-user/hirekar-mern/backend
             git pull origin main
             npm install
             pm2 restart all
